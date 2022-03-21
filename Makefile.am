@@ -3,10 +3,12 @@ ACLOCAL_AMFLAGS = -I m4
 lib_LTLIBRARIES = libccg.la
 
 HFILES =\
-  src/foo.h       
+  src/foo.h   \
+  src/mem.h       
 
 CFILES =\
-  src/foo.c
+  src/foo.c   \
+  src/mem.c
 
 libccg_la_SOURCES = $(HFILES) $(CFILES)
 
