@@ -3,6 +3,6 @@
 
 #include <check.h>
 
-Suite *foo_suite();
+Suite *pqueue_heap_suite();
 
 #endif

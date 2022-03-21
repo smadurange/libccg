@@ -9,10 +9,10 @@ struct pqueue {
   void **heap;
   size_t size;
   size_t capacity;
-  const int (*cmp)(void *, void *);
+  int (*cmp)(void *, void *);
 };
 
-pqueue *ccg_pqueue_create(const int (*cmp)(void *, void *)) {
+pqueue *ccg_pqueue_create(int (*cmp)(void *, void *)) {
   pqueue *pq;
 
   pq = ccg_malloc(sizeof(pqueue));
