@@ -25,7 +25,7 @@ pqueue *ccg_pqueue_create(int (*cmp)(const void *, const void *)) {
 
 size_t ccg_pqueue_size(const pqueue *pq) { return pq->size; }
 
-static void fix_heap(size_t i, pqueue *pq) {
+static void fix_up(size_t i, pqueue *pq) {
   size_t pi;
   void *tmp, **a;
 
@@ -50,7 +50,7 @@ void ccg_pqueue_insert(void *item, pqueue *pq) {
     pq->heap = ccg_realloc(pq->heap, sizeof(item) * pq->cap);
   }
   pq->heap[++pq->size] = item;
-  fix_heap(pq->size, pq);
+  fix_up(pq->size, pq);
 }
 
 void ccg_pqueue_destroy(pqueue *pq) { ccg_free(pq); }
