@@ -7,7 +7,7 @@ AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects])
 AM_PROG_AR
 
-PKG_CHECK_MODULES([CHECK], [check >= 0.9.6])
+PKG_CHECK_MODULES([CHECK], [check >= 0.15.2])
 
 LT_INIT
 
