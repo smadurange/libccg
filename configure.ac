@@ -6,7 +6,8 @@ AC_CONFIG_SRCDIR([src/mem.h])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects])
 AM_PROG_AR
-AM_PATH_CHECK
+
+PKG_CHECK_MODULES([CHECK], [check >= 0.9.6])
 
 LT_INIT
 
