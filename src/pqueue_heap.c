@@ -7,18 +7,18 @@
 
 struct pqueue {
   void **heap;
+  size_t cap;
   size_t size;
-  size_t capacity;
-  int (*cmp)(void *, void *);
+  int (*cmp)(const void *, const void *);
 };
 
-pqueue *ccg_pqueue_create(int (*cmp)(void *, void *)) {
+pqueue *ccg_pqueue_create(int (*cmp)(const void *, const void *)) {
   pqueue *pq;
 
   pq = ccg_malloc(sizeof(pqueue));
   pq->heap = NULL;
+  pq->cap = 0;
   pq->size = 0;
-  pq->capacity = 0;
   pq->cmp = cmp;
   return pq;
 }
@@ -28,6 +28,7 @@ size_t ccg_pqueue_size(const pqueue *pq) { return pq->size; }
 static void fix_heap(size_t i, pqueue *pq) {
   size_t pi;
   void *tmp, **a;
+
   a = pq->heap;
   while (i > 1 && !pq->cmp(a[i >> 2], a[i])) {
     pi = i >> 2;
@@ -40,18 +41,13 @@ static void fix_heap(size_t i, pqueue *pq) {
 
 void ccg_pqueue_insert(void *item, pqueue *pq) {
   int i;
-  void **ptr;
 
-  if (pq->capacity == 0) {
-    pq->capacity = CAPACITY;
+  if (pq->cap == 0) {
+    pq->cap = CAPACITY;
     pq->heap = ccg_malloc(sizeof(item) * CAPACITY);
-  } else if (pq->capacity <= pq->size + 1) {
-    pq->capacity = pq->size << 1;
-    ptr = ccg_malloc(sizeof(item) * pq->capacity);
-    for (i = 0; i < pq->size; i++)
-      ptr[i] = pq->heap[i];
-    ccg_free(pq->heap);
-    pq->heap = ptr;
+  } else if (pq->cap <= pq->size + 1) {
+    pq->cap = (pq->size + 1) << 1;
+    pq->heap = ccg_realloc(pq->heap, sizeof(item) * pq->cap);
   }
   pq->heap[++pq->size] = item;
   fix_heap(pq->size, pq);
