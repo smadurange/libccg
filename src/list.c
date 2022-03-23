@@ -1,8 +1,6 @@
 #include "list.h"
 #include "mem.h"
 
-#define BLK_LEN 4
-
 typedef struct node node;
 
 struct node {
