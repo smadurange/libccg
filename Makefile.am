@@ -8,13 +8,13 @@ HFILES =\
 
 CFILES =\
   src/mem.c     \
-  src/pqueue_heap.c
+  src/pqueue.c
 
 libccg_la_SOURCES = $(HFILES) $(CFILES)
 
 TESTS = libccg_test
 check_PROGRAMS = libccg_test
-libccg_test_SOURCES = $(HFILES) test/libccg_test.h test/libccg_test.c test/pqueue_heap_test.c
+libccg_test_SOURCES = $(HFILES) test/libccg_test.h test/libccg_test.c test/pqueue_test.c
 libccg_test_CFLAGS = @CHECK_CFLAGS@
 libccg_test_LDADD = libccg.la @CHECK_LIBS@
 

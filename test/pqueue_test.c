@@ -113,7 +113,7 @@ Suite *pqueue_heap_suite() {
   Suite *s;
   TCase *tc;
 
-  s = suite_create("priority queue (heap)");
+  s = suite_create("priority queue");
   tc = tcase_create("core");
 
   tcase_add_test(tc, test_pqueue_create);
