@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <sys/types.h>
 
 #include "mem.h"
 #include "pqueue.h"
@@ -26,17 +27,14 @@ pqueue *ccg_pqueue_create(int (*cmp)(const void *, const void *)) {
 
 size_t ccg_pqueue_size(const pqueue *pq) { return pq->size; }
 
-static void fix_up(size_t i, const pqueue *pq) {
-  size_t pi;
-  void *tmp, **a;
+static void fix_up(register int i, const pqueue *pq) {
+  void *tmp;
 
-  a = pq->heap;
-  while (i > 1 && !pq->cmp(a[i >> 2], a[i])) {
-    pi = i >> 2;
-    tmp = a[i];
-    a[i] = a[pi];
-    a[pi] = tmp;
-    i = pi;
+  while (i > 1 && pq->cmp(pq->heap[i >> 1], pq->heap[i]) < 0) {
+    tmp = pq->heap[i];
+    pq->heap[i] = pq->heap[i >> 1];
+    pq->heap[i >> 1] = tmp;
+    i >>= 1;
   }
 }
 

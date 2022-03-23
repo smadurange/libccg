@@ -40,14 +40,14 @@ START_TEST(test_pqueue_insert_int) {
   ck_assert_int_eq(ccg_pqueue_size(queue), 1);
   ccg_pqueue_insert(b, queue);
   ck_assert_int_eq(ccg_pqueue_size(queue), 2);
-  //ccg_pqueue_insert(c, queue);
-  //ck_assert_int_eq(ccg_pqueue_size(queue), 3);
-  //ccg_pqueue_insert(d, queue);
-  //ck_assert_int_eq(ccg_pqueue_size(queue), 4);
-  //ccg_pqueue_insert(e, queue);
-  //ck_assert_int_eq(ccg_pqueue_size(queue), 5);
-  //ccg_pqueue_insert(f, queue);
-  //ck_assert_int_eq(ccg_pqueue_size(queue), 6);
+  ccg_pqueue_insert(c, queue);
+  ck_assert_int_eq(ccg_pqueue_size(queue), 3);
+  ccg_pqueue_insert(d, queue);
+  ck_assert_int_eq(ccg_pqueue_size(queue), 4);
+  ccg_pqueue_insert(e, queue);
+  ck_assert_int_eq(ccg_pqueue_size(queue), 5);
+  ccg_pqueue_insert(f, queue);
+  ck_assert_int_eq(ccg_pqueue_size(queue), 6);
 
   ccg_free(a);
   ccg_free(b);
