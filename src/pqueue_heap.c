@@ -50,6 +50,8 @@ void *ccg_pqueue_remove(pqueue *pq) {
   pq->heap[1] = pq->heap[pq->size];
   pq->heap[pq->size] = tmp;
   fix_down(1, pq);
+  if (pq->size < pq->cap >> 1)
+    pq->heap = ccg_realloc(pq->heap, sizeof(void *) * (pq->cap >>= 1));
   return pq->heap[pq->size--];
 }
 

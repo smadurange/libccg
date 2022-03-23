@@ -34,7 +34,7 @@ START_TEST(test_pqueue_insert_int) {
   e = ccg_malloc(sizeof(int));
   f = ccg_malloc(sizeof(int));
   *a = 1, *b = 2, *c = 3, *d = 4, *e = 4, *f = 5;
-  
+
   queue = ccg_pqueue_create((int (*)(const void *, const void *))cmpint);
 
   ccg_pqueue_insert(a, queue);
@@ -62,29 +62,49 @@ END_TEST
 
 START_TEST(test_pqueue_remove_int) {
   pqueue *queue;
-  int *a, *b, *c, *rv;
+  int *a, *b, *c, *d, *e, *f, *rv;
 
   a = ccg_malloc(sizeof(int));
   b = ccg_malloc(sizeof(int));
   c = ccg_malloc(sizeof(int));
-  *a = 1, *b = 8, *c = 3;
+  d = ccg_malloc(sizeof(int));
+  e = ccg_malloc(sizeof(int));
+  f = ccg_malloc(sizeof(int));
+  *a = 1, *b = 8, *c = 3, *d = -1, *e = 5, *f = 3;
 
   queue = ccg_pqueue_create((int (*)(const void *, const void *))cmpint);
   ccg_pqueue_insert(a, queue);
   ccg_pqueue_insert(b, queue);
   ccg_pqueue_insert(c, queue);
+  ccg_pqueue_insert(d, queue);
+  ccg_pqueue_insert(e, queue);
+  ccg_pqueue_insert(f, queue);
   
   rv = ccg_pqueue_remove(queue);
   ck_assert_int_eq(*rv, *b);
+  ck_assert_int_eq(ccg_pqueue_size(queue), 5);
+  rv = ccg_pqueue_remove(queue);
+  ck_assert_int_eq(*rv, *e);
+  ck_assert_int_eq(ccg_pqueue_size(queue), 4);
   rv = ccg_pqueue_remove(queue);
   ck_assert_int_eq(*rv, *c);
+  ck_assert_int_eq(ccg_pqueue_size(queue), 3);
+  rv = ccg_pqueue_remove(queue);
+  ck_assert_int_eq(*rv, *f);
+  ck_assert_int_eq(ccg_pqueue_size(queue), 2);
   rv = ccg_pqueue_remove(queue);
   ck_assert_int_eq(*rv, *a);
+  ck_assert_int_eq(ccg_pqueue_size(queue), 1);
+  rv = ccg_pqueue_remove(queue);
+  ck_assert_int_eq(*rv, *d);
   ck_assert_int_eq(ccg_pqueue_size(queue), 0);
 
   ccg_free(a);
   ccg_free(b);
   ccg_free(c);
+  ccg_free(d);
+  ccg_free(e);
+  ccg_free(f);
   ccg_pqueue_destroy(queue);
 }
 END_TEST
