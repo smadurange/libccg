@@ -4,12 +4,10 @@ lib_LTLIBRARIES = libccg.la
 
 HFILES =\
   src/mem.h     \
-  src/map.h     \
   src/pqueue.h     
 
 CFILES =\
   src/mem.c     \
-  src/map.c     \
   src/pqueue.c
 
 libccg_la_SOURCES = $(HFILES) $(CFILES)
