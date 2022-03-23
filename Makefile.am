@@ -3,18 +3,18 @@ ACLOCAL_AMFLAGS = -I m4
 lib_LTLIBRARIES = libccg.la
 
 HFILES =\
-  src/foo.h   \
-  src/mem.h       
+  src/mem.h     \
+  src/pqueue.h     
 
 CFILES =\
-  src/foo.c   \
-  src/mem.c
+  src/mem.c     \
+  src/pqueue_heap.c
 
 libccg_la_SOURCES = $(HFILES) $(CFILES)
 
 TESTS = libccg_test
 check_PROGRAMS = libccg_test
-libccg_test_SOURCES = $(HFILES) test/libccg_test.h test/libccg_test.c test/foo_test.c
+libccg_test_SOURCES = $(HFILES) test/libccg_test.h test/libccg_test.c test/pqueue_heap_test.c
 libccg_test_CFLAGS = @CHECK_CFLAGS@
 libccg_test_LDADD = libccg.la @CHECK_LIBS@
 
