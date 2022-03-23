@@ -34,6 +34,7 @@ START_TEST(test_pqueue_insert_int) {
   e = ccg_malloc(sizeof(int));
   f = ccg_malloc(sizeof(int));
   *a = 1, *b = 2, *c = 3, *d = 4, *e = 4, *f = 5;
+  
   queue = ccg_pqueue_create((int (*)(const void *, const void *))cmpint);
 
   ccg_pqueue_insert(a, queue);
@@ -67,6 +68,7 @@ START_TEST(test_pqueue_remove_int) {
   b = ccg_malloc(sizeof(int));
   c = ccg_malloc(sizeof(int));
   *a = 1, *b = 8, *c = 3;
+
   queue = ccg_pqueue_create((int (*)(const void *, const void *))cmpint);
   ccg_pqueue_insert(a, queue);
   ccg_pqueue_insert(b, queue);
