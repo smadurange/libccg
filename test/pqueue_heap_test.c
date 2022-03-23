@@ -35,7 +35,7 @@ START_TEST(test_pqueue_insert_int) {
   f = ccg_malloc(sizeof(int));
   *a = 1, *b = 2, *c = 3, *d = 4, *e = 4, *f = 5;
   queue = ccg_pqueue_create((int (*)(const void *, const void *))cmpint);
-  
+
   ccg_pqueue_insert(a, queue);
   ck_assert_int_eq(ccg_pqueue_size(queue), 1);
   ccg_pqueue_insert(b, queue);
@@ -59,6 +59,29 @@ START_TEST(test_pqueue_insert_int) {
 }
 END_TEST
 
+START_TEST(test_pqueue_remove_int) {
+  pqueue *queue;
+  int *a, *b, *c, *rv;
+
+  a = ccg_malloc(sizeof(int));
+  b = ccg_malloc(sizeof(int));
+  c = ccg_malloc(sizeof(int));
+  *a = 1, *b = 8, *c = 3;
+  queue = ccg_pqueue_create((int (*)(const void *, const void *))cmpint);
+  ccg_pqueue_insert(a, queue);
+  ccg_pqueue_insert(b, queue);
+  ccg_pqueue_insert(c, queue);
+  
+  rv = (int *)ccg_pqueue_remove(queue);
+  ck_assert_int_eq(*rv, *b);
+
+  ccg_free(a);
+  ccg_free(b);
+  ccg_free(c);
+  ccg_pqueue_destroy(queue);
+}
+END_TEST
+
 Suite *pqueue_heap_suite() {
   Suite *s;
   TCase *tc;
@@ -68,6 +91,7 @@ Suite *pqueue_heap_suite() {
 
   tcase_add_test(tc, test_pqueue_create);
   tcase_add_test(tc, test_pqueue_insert_int);
+  tcase_add_test(tc, test_pqueue_remove_int);
 
   suite_add_tcase(s, tc);
   return s;

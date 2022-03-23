@@ -49,4 +49,9 @@ void ccg_pqueue_insert(void *item, pqueue *pq) {
   fix_up(pq->size, pq);
 }
 
+void *ccg_pqueue_remove(pqueue *pq) {
+  // todo: fix down
+  return pq->size > 0 ? pq->heap[1] : 0; 
+}
+
 void ccg_pqueue_destroy(pqueue *pq) { ccg_free(pq); }
