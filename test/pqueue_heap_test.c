@@ -72,8 +72,13 @@ START_TEST(test_pqueue_remove_int) {
   ccg_pqueue_insert(b, queue);
   ccg_pqueue_insert(c, queue);
   
-  rv = (int *)ccg_pqueue_remove(queue);
+  rv = ccg_pqueue_remove(queue);
   ck_assert_int_eq(*rv, *b);
+  rv = ccg_pqueue_remove(queue);
+  ck_assert_int_eq(*rv, *c);
+  rv = ccg_pqueue_remove(queue);
+  ck_assert_int_eq(*rv, *a);
+  ck_assert_int_eq(ccg_pqueue_size(queue), 0);
 
   ccg_free(a);
   ccg_free(b);
