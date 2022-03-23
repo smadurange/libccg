@@ -4,7 +4,7 @@
 #include "mem.h"
 #include "pqueue.h"
 
-#define INITCAP 4
+#define BLK_LEN 4
 
 struct pqueue {
   void **heap;
@@ -20,10 +20,10 @@ pqueue *ccg_pqueue_create(int (*cmp)(const void *, const void *)) {
   pqueue *pq;
 
   pq = ccg_malloc(sizeof(pqueue));
-  pq->cap = INITCAP;
+  pq->cap = BLK_LEN;
   pq->size = 0;
   pq->cmp = cmp;
-  pq->heap = ccg_malloc(sizeof(void *) * INITCAP);
+  pq->heap = ccg_malloc(sizeof(void *) * BLK_LEN);
   pq->heap[0] = 0;
   return pq;
 }
@@ -34,7 +34,7 @@ void ccg_pqueue_insert(void *item, pqueue *pq) {
   int i;
 
   if (pq->cap <= pq->size + 1)
-    pq->heap = ccg_realloc(pq->heap, sizeof(void *) * (pq->cap <<= 1));
+    pq->heap = ccg_realloc(pq->heap, sizeof(void *) * (pq->cap += BLK_LEN));
   pq->heap[++pq->size] = item;
   fix_up(pq->size, pq);
 }
@@ -48,8 +48,9 @@ void *ccg_pqueue_remove(pqueue *pq) {
   pq->heap[1] = pq->heap[pq->size];
   pq->heap[pq->size] = tmp;
   fix_down(1, pq);
-  if (pq->size < pq->cap >> 1)
-    pq->heap = ccg_realloc(pq->heap, sizeof(void *) * (pq->cap >>= 1));
+  if (pq->cap - pq->size > BLK_LEN)
+    pq->heap =
+        ccg_realloc(pq->heap, sizeof(void *) * (pq->cap = pq->size + BLK_LEN));
   return pq->heap[pq->size--];
 }
 
