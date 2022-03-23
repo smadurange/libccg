@@ -33,10 +33,8 @@ size_t ccg_pqueue_size(const pqueue *pq) { return pq->size; }
 void ccg_pqueue_insert(void *item, pqueue *pq) {
   int i;
 
-  if (pq->cap <= pq->size + 1) {
-    pq->cap <<= 1;
-    pq->heap = ccg_realloc(pq->heap, sizeof(void *) * pq->cap);
-  }
+  if (pq->cap <= pq->size + 1)
+    pq->heap = ccg_realloc(pq->heap, sizeof(void *) * (pq->cap <<= 1));
   pq->heap[++pq->size] = item;
   fix_up(pq->size, pq);
 }
