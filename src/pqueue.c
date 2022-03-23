@@ -4,7 +4,7 @@
 #include "mem.h"
 #include "pqueue.h"
 
-#define MAXLEN 4
+#define INITCAP 4
 
 struct pqueue {
   void **heap;
@@ -20,10 +20,10 @@ pqueue *ccg_pqueue_create(int (*cmp)(const void *, const void *)) {
   pqueue *pq;
 
   pq = ccg_malloc(sizeof(pqueue));
-  pq->cap = MAXLEN;
+  pq->cap = INITCAP;
   pq->size = 0;
   pq->cmp = cmp;
-  pq->heap = ccg_malloc(sizeof(void *) * MAXLEN);
+  pq->heap = ccg_malloc(sizeof(void *) * INITCAP);
   pq->heap[0] = 0;
   return pq;
 }
