@@ -1,5 +1,7 @@
+#include <assert.h>
 #include <stddef.h>
 
+#include "adt.h"
 #include "dict.h"
 #include "list.h"
 #include "mem.h"
@@ -11,6 +13,7 @@ struct dict {
   size_t tablen;
   hasher hash;
   comparer eq;
+  finalizer fin;
   list **tab;
 };
 
@@ -19,7 +22,7 @@ typedef struct item {
   void *val;
 } item;
 
-dict *ccg_dict_create(const hasher hf, const comparer eq) {
+dict *ccg_dict_create(const hasher hf, const comparer eq, const finalizer fin) {
   dict *dt;
 
   dt = ccg_malloc(sizeof(dict));
@@ -27,6 +30,7 @@ dict *ccg_dict_create(const hasher hf, const comparer eq) {
   dt->tablen = TABLEN;
   dt->hash = hf;
   dt->eq = eq;
+  dt->fin = fin;
   dt->tab = 0;
   return dt;
 }
@@ -68,6 +72,6 @@ void ccg_dict_destroy(dict *dt) {
   int i;
 
   for (i = 0; i < dt->tablen; i++)
-    ccg_list_destroy(dt->tab[i]);
+    ccg_list_destroy(dt->fin, dt->tab[i]);
   ccg_free(dt);
 }

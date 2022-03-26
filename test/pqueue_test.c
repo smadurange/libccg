@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <check.h>
 
 #include "../src/mem.h"
@@ -5,18 +6,22 @@
 #include "libccg_test.h"
 
 static int cmpint(const int *a, const int *b) {
-	if (*a < *b)
-		return -1;
-	else if (*a > *b)
-		return 1;
-	else
+	if (a == b || *a == *b)
 		return 0;
+	else if (*a < *b)
+		return -1;
+	else
+		return 1;
+}
+
+static void fin(void *ptr) {
+	ccg_free(ptr);
 }
 
 START_TEST(test_pqueue_create) {
 	pqueue *queue;
 
-	queue = ccg_pqueue_create((int (*)(const void *, const void *))cmpint);
+	queue = ccg_pqueue_create((comparer)cmpint, 0);
 	ck_assert_ptr_nonnull(queue);
 	ck_assert_int_eq(ccg_pqueue_size(queue), 0);
 	ccg_pqueue_destroy(queue);
@@ -35,7 +40,7 @@ START_TEST(test_pqueue_insert_int) {
 	f = ccg_malloc(sizeof(int));
 	*a = 1, *b = 2, *c = 3, *d = 4, *e = 4, *f = 5;
 
-	queue = ccg_pqueue_create((int (*)(const void *, const void *))cmpint);
+	queue = ccg_pqueue_create((comparer)cmpint, fin);
 
 	ccg_pqueue_insert(a, queue);
 	ck_assert_int_eq(ccg_pqueue_size(queue), 1);
@@ -50,12 +55,6 @@ START_TEST(test_pqueue_insert_int) {
 	ccg_pqueue_insert(f, queue);
 	ck_assert_int_eq(ccg_pqueue_size(queue), 6);
 
-	ccg_free(a);
-	ccg_free(b);
-	ccg_free(c);
-	ccg_free(d);
-	ccg_free(e);
-	ccg_free(f);
 	ccg_pqueue_destroy(queue);
 }
 END_TEST
@@ -72,7 +71,7 @@ START_TEST(test_pqueue_remove_int) {
 	f = ccg_malloc(sizeof(int));
 	*a = 1, *b = 8, *c = 3, *d = -1, *e = 5, *f = 3;
 
-	queue = ccg_pqueue_create((int (*)(const void *, const void *))cmpint);
+	queue = ccg_pqueue_create((comparer)cmpint, 0);
 	ccg_pqueue_insert(a, queue);
 	ccg_pqueue_insert(b, queue);
 	ccg_pqueue_insert(c, queue);

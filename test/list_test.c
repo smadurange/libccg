@@ -11,13 +11,18 @@ static int cmpint(const int *a, const int *b) {
     return 0;
 }
 
+static void fin(void *ptr) {
+	ccg_free(ptr);
+}
+
+
 START_TEST(test_list_create) {
   list *ls;
 
   ls = ccg_list_create();
   ck_assert_ptr_nonnull(ls);
 
-  ccg_list_destroy(ls);
+  ccg_list_destroy(0, ls);
 }
 END_TEST
 
@@ -38,9 +43,7 @@ START_TEST(test_list_find_or_append) {
   rv = ccg_list_put_if_absent(b, (comparer)cmpint, ls);
   ck_assert_int_eq(*(int *)rv, *b);
 
-  ccg_free(a);
-  ccg_free(b);
-  ccg_list_destroy(ls);
+  ccg_list_destroy(fin, ls);
 }
 END_TEST
 
@@ -65,7 +68,7 @@ START_TEST(test_list_find) {
   ccg_free(b);
   ccg_free(c);
   ccg_free(d);
-  ccg_list_destroy(ls);
+  ccg_list_destroy(0, ls);
 }
 END_TEST
 
@@ -92,7 +95,7 @@ START_TEST(test_list_remove) {
   ccg_free(a);
   ccg_free(b);
   ccg_free(c);
-  ccg_list_destroy(ls);
+  ccg_list_destroy(0, ls);
 }
 END_TEST
 

@@ -4,6 +4,7 @@ lib_LTLIBRARIES = libccg.la
 
 HFILES =\
   src/mem.h      \
+  src/adt.h      \
   src/list.h     \
   src/dict.h     \
   src/pqueue.h     
