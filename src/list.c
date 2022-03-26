@@ -17,14 +17,14 @@ list *ccg_list_create() {
   return head;
 }
 
-void *ccg_list_find(const void *item, const cmp eq, const list *ls) {
+void *ccg_list_find(const void *item, const comparer eq, const list *ls) {
   for (; ls != 0; ls = ls->next)
     if (eq(ls->item, item))
       return ls->item;
   return 0;
 }
 
-void *ccg_list_find_or_append(void *item, const cmp eq, list *ls) {
+void *ccg_list_find_or_append(void *item, const comparer eq, list *ls) {
   if (!ls->item) {
     ls->item = item;
     return 0;
@@ -41,7 +41,7 @@ void *ccg_list_find_or_append(void *item, const cmp eq, list *ls) {
   return 0;
 }
 
-void *ccg_list_remove(const void *item, const cmp eq, list **ls) {
+void *ccg_list_remove(const void *item, const comparer eq, list **ls) {
   void *rv;
   node *tmp;
 
