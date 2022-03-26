@@ -8,7 +8,8 @@ int main() {
 	SRunner *sr;
 
 	sr = srunner_create(pqueue_suite());
-	sr = srunner_create(list_suite());
+	srunner_add_suite(sr, list_suite());
+	srunner_add_suite(sr, dict_suite());
 
 	srunner_run_all(sr, CK_NORMAL);
 	fc = srunner_ntests_failed(sr);

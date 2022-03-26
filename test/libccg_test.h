@@ -5,5 +5,6 @@
 
 Suite *pqueue_suite();
 Suite *list_suite();
+Suite *dict_suite();
 
 #endif
