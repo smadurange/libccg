@@ -69,6 +69,33 @@ START_TEST(test_list_find) {
 }
 END_TEST
 
+START_TEST(test_list_remove) {
+  list *ls;
+  int *a, *b, *c;
+
+  a = ccg_malloc(sizeof(int));
+  b = ccg_malloc(sizeof(int));
+  c = ccg_malloc(sizeof(int));
+  *a = 13, *b = 5, *c = 100;
+  ls = ccg_list_create();
+
+  ck_assert_ptr_null(ccg_list_remove(a, (cmp)cmpint, &ls));
+
+  ccg_list_find_or_append(a, (cmp)cmpint, ls);
+  ccg_list_find_or_append(b, (cmp)cmpint, ls);
+  ccg_list_find_or_append(c, (cmp)cmpint, ls);
+
+  ck_assert_int_eq(*(int *)ccg_list_remove(a, (cmp)cmpint, &ls), *a);
+  ck_assert_int_eq(*(int *)ccg_list_remove(c, (cmp)cmpint, &ls), *c);
+  ck_assert_ptr_null(ccg_list_remove(a, (cmp)cmpint, &ls));
+
+  ccg_free(a);
+  ccg_free(b);
+  ccg_free(c);
+  ccg_list_destroy(ls);
+}
+END_TEST
+
 Suite *list_suite() {
   Suite *s;
   TCase *tc;
@@ -79,6 +106,7 @@ Suite *list_suite() {
   tcase_add_test(tc, test_list_create);
   tcase_add_test(tc, test_list_find_or_append);
   tcase_add_test(tc, test_list_find);
+  tcase_add_test(tc, test_list_remove);
 
   suite_add_tcase(s, tc);
   return s;

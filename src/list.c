@@ -43,20 +43,23 @@ void *ccg_list_find_or_append(void *item, const cmp eq, list *ls) {
 
 void *ccg_list_remove(const void *item, const cmp eq, list **ls) {
   void *rv;
-  node register *ptr, *t;
+  node *tmp;
 
+  if (!(*ls)->item)
+    return 0;
   if (eq((*ls)->item, item)) {
     rv = (*ls)->item;
-    ls = &(*ls)->next;
-    ccg_free(*ls);
+    tmp = *ls;
+    *ls = (*ls)->next;
+    ccg_free(tmp);
     return rv;
   }
-  for (ptr = (*ls); ptr != 0; ptr = ptr->next) {
-    if (ptr->next && eq(ptr->next->item, item)) {
-      rv = ptr->next->item;
-      t = ptr->next;
-      ptr->next = ptr->next->next;
-      ccg_free(t);
+  for (; (*ls) != 0; *ls = (*ls)->next) {
+    if ((*ls)->next && eq((*ls)->next->item, item)) {
+      rv = (*ls)->next->item;
+      tmp = (*ls)->next;
+      (*ls)->next = (*ls)->next->next;
+      ccg_free(tmp);
       return rv;
     }
   }
