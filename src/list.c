@@ -38,11 +38,35 @@ void *ccg_list_find_or_append(void *item, const cmp eq, list *ls) {
   return 0;
 }
 
-void *ccg_list_remove(const void *item, const cmp eq, list *ls) {
-  // todo:
+void *ccg_list_remove(const void *item, const cmp eq, list **ls) {
+  void *rv;
+  node register *ptr, *t;
+
+  if (eq((*ls)->item, item)) {
+    rv = (*ls)->item;
+    ls = &(*ls)->next;
+    ccg_free(*ls);
+    return rv;
+  }
+  for (ptr = (*ls); ptr != 0; ptr = ptr->next) {
+    if (ptr->next && eq(ptr->next->item, item)) {
+      rv = ptr->next->item;
+      t = ptr->next;
+      ptr->next = ptr->next->next;
+      ccg_free(t);
+      return rv;
+    }
+  }
   return 0;
 }
 
 void ccg_list_destroy(list *ls) {
-  // todo:
+  register node *prev, *curr;
+
+  for (prev = 0, curr = ls; curr != 0; curr = curr->next) {
+    if (prev != 0)
+      ccg_free(prev);
+    prev = curr;
+  }
+  ccg_free(ls);
 }
