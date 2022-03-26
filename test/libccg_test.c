@@ -7,7 +7,8 @@ int main() {
   int fc;
   SRunner *sr;
 
-  sr = srunner_create(pqueue_heap_suite());
+  sr = srunner_create(pqueue_suite());
+  sr = srunner_create(list_suite());
 
   srunner_run_all(sr, CK_NORMAL);
   fc = srunner_ntests_failed(sr);
