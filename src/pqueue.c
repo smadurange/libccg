@@ -25,7 +25,7 @@ pqueue *ccg_pqueue_create(const comparer cmp, const finalizer fin) {
   pq->cap = BLK_LEN;
   pq->size = 0;
   pq->cmp = cmp;
-	pq->fin = fin;
+  pq->fin = fin;
   pq->heap = ccg_malloc(sizeof(void *) * BLK_LEN);
   pq->heap[0] = 0;
   return pq;
