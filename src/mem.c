@@ -13,7 +13,6 @@ void *ccg_malloc(size_t size) {
   ptr = malloc(size);
   if (ptr == NULL) {
     perror("ccg_malloc: \n");
-    abort();
   }
   return ptr;
 }
