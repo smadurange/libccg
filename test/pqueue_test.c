@@ -4,7 +4,7 @@
 #include "../src/pqueue.h"
 #include "libccg_test.h"
 
-int cmpint(const int *a, const int *b) {
+static int cmpint(const int *a, const int *b) {
   if (*a < *b)
     return -1;
   else if (*a > *b)
@@ -109,7 +109,7 @@ START_TEST(test_pqueue_remove_int) {
 }
 END_TEST
 
-Suite *pqueue_heap_suite() {
+Suite *pqueue_suite() {
   Suite *s;
   TCase *tc;
 
