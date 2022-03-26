@@ -25,16 +25,19 @@ void *ccg_list_find(const void *item, const cmp eq, const list *ls) {
 }
 
 void *ccg_list_find_or_append(void *item, const cmp eq, list *ls) {
-  node *tail;
-
-  for (; ls != 0; ls = ls->next)
+  if (!ls->item) {
+    ls->item = item;
+    return 0;
+  }
+  for (; ls != 0; ls = ls->next) {
     if (eq(ls->item, item))
       return ls->item;
-    else
-      tail = ls;
-  tail->next = ccg_malloc(sizeof(node));
-  tail->next->item = item;
-  tail->next->next = 0;
+    if (ls->next == 0)
+      break;
+  }
+  ls->next = ccg_malloc(sizeof(node));
+  ls->next->item = item;
+  ls->next->next = 0;
   return 0;
 }
 
@@ -68,5 +71,4 @@ void ccg_list_destroy(list *ls) {
       ccg_free(prev);
     prev = curr;
   }
-  ccg_free(ls);
 }
