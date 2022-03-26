@@ -9,12 +9,12 @@
 struct dict {
   size_t size;
   size_t tablen;
-  hash hash;
+  hasher hash;
   comparer eq;
   list **tab;
 };
 
-dict *ccg_dict_create(const hash hf, const comparer eq) {
+dict *ccg_dict_create(const hasher hf, const comparer eq) {
   dict *dt;
 
   dt = ccg_malloc(sizeof(dict));
