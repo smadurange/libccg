@@ -31,11 +31,11 @@ START_TEST(test_list_find_or_append) {
   *a = 0, *b = 1;
   ls = ccg_list_create();
 
-  rv = ccg_list_find_or_append(a, (comparer)cmpint, ls);
+  rv = ccg_list_put_if_absent(a, (comparer)cmpint, ls);
   ck_assert_ptr_null(rv);
-  rv = ccg_list_find_or_append(b, (comparer)cmpint, ls);
+  rv = ccg_list_put_if_absent(b, (comparer)cmpint, ls);
   ck_assert_ptr_null(rv);
-  rv = ccg_list_find_or_append(b, (comparer)cmpint, ls);
+  rv = ccg_list_put_if_absent(b, (comparer)cmpint, ls);
   ck_assert_int_eq(*(int *)rv, *b);
 
   ccg_free(a);
@@ -55,9 +55,9 @@ START_TEST(test_list_find) {
   *a = 0, *b = 100, *c = 3, *d = 7;
   ls = ccg_list_create();
 
-  ccg_list_find_or_append(a, (comparer)cmpint, ls);
-  ccg_list_find_or_append(b, (comparer)cmpint, ls);
-  ccg_list_find_or_append(c, (comparer)cmpint, ls);
+  ccg_list_put_if_absent(a, (comparer)cmpint, ls);
+  ccg_list_put_if_absent(b, (comparer)cmpint, ls);
+  ccg_list_put_if_absent(c, (comparer)cmpint, ls);
   ck_assert_ptr_null(ccg_list_find(d, (comparer)cmpint, ls));
   ck_assert_int_eq(*(int *)ccg_list_find(b, (comparer)cmpint, ls), *b);
 
@@ -81,9 +81,9 @@ START_TEST(test_list_remove) {
 
   ck_assert_ptr_null(ccg_list_remove(a, (comparer)cmpint, &ls));
 
-  ccg_list_find_or_append(a, (comparer)cmpint, ls);
-  ccg_list_find_or_append(b, (comparer)cmpint, ls);
-  ccg_list_find_or_append(c, (comparer)cmpint, ls);
+  ccg_list_put_if_absent(a, (comparer)cmpint, ls);
+  ccg_list_put_if_absent(b, (comparer)cmpint, ls);
+  ccg_list_put_if_absent(c, (comparer)cmpint, ls);
 
   ck_assert_int_eq(*(int *)ccg_list_remove(a, (comparer)cmpint, &ls), *a);
   ck_assert_int_eq(*(int *)ccg_list_remove(c, (comparer)cmpint, &ls), *c);

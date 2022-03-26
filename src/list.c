@@ -17,14 +17,7 @@ list *ccg_list_create() {
   return head;
 }
 
-void *ccg_list_find(const void *item, const comparer eq, const list *ls) {
-  for (; ls != 0; ls = ls->next)
-    if (eq(ls->item, item))
-      return ls->item;
-  return 0;
-}
-
-void *ccg_list_find_or_append(void *item, const comparer eq, list *ls) {
+void *ccg_list_put_if_absent(void *item, const comparer eq, list *ls) {
   if (!ls->item) {
     ls->item = item;
     return 0;
@@ -38,6 +31,13 @@ void *ccg_list_find_or_append(void *item, const comparer eq, list *ls) {
   ls->next = ccg_malloc(sizeof(node));
   ls->next->item = item;
   ls->next->next = 0;
+  return 0;
+}
+
+void *ccg_list_find(const void *item, const comparer eq, const list *ls) {
+  for (; ls != 0; ls = ls->next)
+    if (eq(ls->item, item))
+      return ls->item;
   return 0;
 }
 
