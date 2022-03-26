@@ -67,7 +67,7 @@ void *ccg_list_remove(const void *item, const cmp eq, list **ls) {
 }
 
 void ccg_list_destroy(list *ls) {
-	register node *prev, *curr;
+	node *prev, *curr;
 
 	for (prev = 0, curr = ls; curr != 0; curr = curr->next) {
 		if (prev != 0)
