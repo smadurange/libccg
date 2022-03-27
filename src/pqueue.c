@@ -8,11 +8,11 @@
 #define BLK_LEN 4
 
 struct pqueue {
-	void **heap;
 	size_t cap;
 	size_t size;
 	comparer cmp;
 	finalizer fin;
+	void **heap;
 };
 
 static void fix_up(register int i, const pqueue *pq);
