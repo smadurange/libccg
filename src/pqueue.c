@@ -5,7 +5,7 @@
 #include "mem.h"
 #include "pqueue.h"
 
-#define BLK_LEN 4
+#define BLKLEN 4
 
 struct pqueue {
 	size_t cap;
@@ -22,12 +22,11 @@ pqueue *ccg_pqueue_create(const comparer cmp, const finalizer fin) {
 	pqueue *pq;
 
 	pq = ccg_malloc(sizeof(pqueue));
-	pq->cap = BLK_LEN;
+	pq->cap = BLKLEN;
 	pq->size = 0;
 	pq->cmp = cmp;
 	pq->fin = fin;
-	pq->heap = ccg_malloc(sizeof(void *) * BLK_LEN);
-	pq->heap[0] = 0;
+	pq->heap = ccg_calloc(BLKLEN, sizeof(void *));
 	return pq;
 }
 
