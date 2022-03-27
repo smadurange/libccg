@@ -36,7 +36,7 @@ void ccg_pqueue_insert(void *item, pqueue *pq) {
 	int i;
 
 	if (pq->cap <= pq->size + 1)
-		pq->heap = ccg_realloc(pq->heap, sizeof(void *) * (pq->cap += BLK_LEN));
+		pq->heap = ccg_realloc(pq->heap, sizeof(void *) * (pq->cap += BLKLEN));
 	pq->heap[++pq->size] = item;
 	fix_up(pq->size, pq);
 }
@@ -50,9 +50,9 @@ void *ccg_pqueue_remove(pqueue *pq) {
 	pq->heap[1] = pq->heap[pq->size];
 	pq->heap[pq->size] = tmp;
 	fix_down(1, pq);
-	if (pq->cap - pq->size > BLK_LEN)
+	if (pq->cap - pq->size > BLKLEN)
 		pq->heap =
-				ccg_realloc(pq->heap, sizeof(void *) * (pq->cap = pq->size + BLK_LEN));
+				ccg_realloc(pq->heap, sizeof(void *) * (pq->cap = pq->size + BLKLEN));
 	return pq->heap[pq->size--];
 }
 
