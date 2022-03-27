@@ -59,15 +59,15 @@ START_TEST(test_dict_find) {
 	k1 = "a", v1 = 1;
 	k2 = "b", v2 = 2;
 	k3 = "b", v2 = 3;
-
 	dt = ccg_dict_create((hasher)hashstr, (comparer)streq, 0);
+
 	ccg_dict_put(k1, &v1, dt);
 	ccg_dict_put(k2, &v2, dt);
 	ccg_dict_put(k3, &v3, dt);
 
-	ck_assert_int_eq(*(int *)ccg_dict_find(k1, dt), v1);
-	ck_assert_int_eq(*(int *)ccg_dict_find(k2, dt), v2);
-	ck_assert_int_eq(*(int *)ccg_dict_find(k3, dt), v3);
+	ck_assert_int_eq(*(char *)ccg_dict_find(k1, dt), v1);
+	ck_assert_int_eq(*(char *)ccg_dict_find(k2, dt), v2);
+	ck_assert_int_eq(*(char *)ccg_dict_find(k3, dt), v3);
 }
 
 Suite *dict_suite() {
