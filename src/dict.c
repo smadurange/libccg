@@ -6,7 +6,11 @@
 #include "list.h"
 #include "mem.h"
 
-#define TABLEN 100
+static size_t primes[25] = {
+		101,       251,       509,         1021,      2039,     4093,     8191,
+		16381,     32749,     65521,       131071,    262139,   524287,   1048573,
+		2097143,   4194301,   8388593,     16777213,  33554393, 67108859, 134217689,
+		268435399, 536870909, 10737441789, 2147483647};
 
 struct dict {
 	size_t size;
@@ -27,7 +31,7 @@ dict *ccg_dict_create(const hasher hf, const comparer eq, const finalizer fin) {
 
 	dt = ccg_malloc(sizeof(dict));
 	dt->size = 0;
-	dt->tablen = TABLEN;
+	dt->tablen = primes[0];
 	dt->hash = hf;
 	dt->eq = eq;
 	dt->fin = fin;
