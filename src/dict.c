@@ -7,10 +7,10 @@
 #include "mem.h"
 
 static size_t primes[25] = {
-		101,       251,       509,         1021,      2039,     4093,     8191,
-		16381,     32749,     65521,       131071,    262139,   524287,   1048573,
-		2097143,   4194301,   8388593,     16777213,  33554393, 67108859, 134217689,
-		268435399, 536870909, 10737441789, 2147483647};
+	101,       251,       509,         1021,      2039,     4093,     8191,
+	16381,     32749,     65521,       131071,    262139,   524287,   1048573,
+	2097143,   4194301,   8388593,     16777213,  33554393, 67108859, 134217689,
+	268435399, 536870909, 10737441789, 2147483647};
 
 struct dict {
 	size_t size;
@@ -27,6 +27,7 @@ typedef struct item {
 } item;
 
 dict *ccg_dict_create(const hasher hf, const comparer eq, const finalizer fin) {
+	int i;
 	dict *dt;
 
 	dt = ccg_malloc(sizeof(dict));
@@ -35,7 +36,9 @@ dict *ccg_dict_create(const hasher hf, const comparer eq, const finalizer fin) {
 	dt->hash = hf;
 	dt->eq = eq;
 	dt->fin = fin;
-	dt->tab = ccg_calloc(primes[0], sizeof(list *));
+	dt->tab = ccg_malloc(sizeof(list *) * primes[0]);
+	for (i = 0; i < primes[0]; i++)
+		dt->tab[i] = ccg_list_create();
 	return dt;
 }
 
