@@ -6,9 +6,9 @@
 
 static int cmpint(const int *a, const int *b) {
   if (a == b || *a == *b)
-    return 1;
-  else
     return 0;
+  else
+    return 1;
 }
 
 START_TEST(test_list_create) {

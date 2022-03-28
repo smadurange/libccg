@@ -17,13 +17,13 @@ list *ccg_list_create() {
 	return head;
 }
 
-void *ccg_list_put_if_absent(void *item, const comparer eq, list *ls) {
+void *ccg_list_put_if_absent(void *item, const comparer cmp, list *ls) {
 	if (!ls->item) {
 		ls->item = item;
 		return 0;
 	}
 	for (; ls != 0; ls = ls->next) {
-		if (eq(ls->item, item))
+		if (cmp(ls->item, item) == 0)
 			return ls->item;
 		if (ls->next == 0)
 			break;
@@ -34,20 +34,20 @@ void *ccg_list_put_if_absent(void *item, const comparer eq, list *ls) {
 	return 0;
 }
 
-void *ccg_list_find(const void *item, const comparer eq, const list *ls) {
+void *ccg_list_find(const void *item, const comparer cmp, const list *ls) {
 	for (; ls != 0; ls = ls->next)
-		if (eq(ls->item, item))
+		if (cmp(ls->item, item) == 0)
 			return ls->item;
 	return 0;
 }
 
-void *ccg_list_remove(const void *item, const comparer eq, list **ls) {
+void *ccg_list_remove(const void *item, const comparer cmp, list **ls) {
 	void *rv;
 	node *tmp;
 
 	if (!(*ls)->item)
 		return 0;
-	if (eq((*ls)->item, item)) {
+	if (cmp((*ls)->item, item) == 0) {
 		rv = (*ls)->item;
 		tmp = *ls;
 		*ls = (*ls)->next;
@@ -55,7 +55,7 @@ void *ccg_list_remove(const void *item, const comparer eq, list **ls) {
 		return rv;
 	}
 	for (; (*ls) != 0; *ls = (*ls)->next) {
-		if ((*ls)->next && eq((*ls)->next->item, item)) {
+		if ((*ls)->next && cmp((*ls)->next->item, item) == 0) {
 			rv = (*ls)->next->item;
 			tmp = (*ls)->next;
 			(*ls)->next = (*ls)->next->next;

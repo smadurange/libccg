@@ -16,7 +16,7 @@ struct dict {
 	size_t size;
 	size_t tablen;
 	hasher hash;
-	comparer eq;
+	comparer cmp;
 	finalizer fin;
 	list **tab;
 };
@@ -26,7 +26,8 @@ typedef struct item {
 	void *val;
 } item;
 
-dict *ccg_dict_create(const hasher hf, const comparer eq, const finalizer fin) {
+dict *ccg_dict_create(const hasher hf, const comparer cmp,
+											const finalizer fin) {
 	int i;
 	dict *dt;
 
@@ -34,7 +35,7 @@ dict *ccg_dict_create(const hasher hf, const comparer eq, const finalizer fin) {
 	dt->size = 0;
 	dt->tablen = primes[0];
 	dt->hash = hf;
-	dt->eq = eq;
+	dt->cmp = cmp;
 	dt->fin = fin;
 	dt->tab = ccg_malloc(sizeof(list *) * primes[0]);
 	for (i = 0; i < primes[0]; i++)
@@ -49,7 +50,7 @@ void ccg_dict_put(void *key, void *val, const dict *dt) {
 	obj = ccg_malloc(sizeof(item));
 	obj->key = key;
 	obj->val = val;
-	ccg_list_put_if_absent(obj, dt->eq, dt->tab[dt->hash(key, dt->tablen)]);
+	ccg_list_put_if_absent(obj, dt->cmp, dt->tab[dt->hash(key, dt->tablen)]);
 }
 
 void *ccg_dict_find(const void *key, const dict *dt) {
@@ -57,7 +58,7 @@ void *ccg_dict_find(const void *key, const dict *dt) {
 
 	obj.key = (void *)key;
 	obj.val = 0;
-	rv = ccg_list_find(&obj, dt->eq, dt->tab[dt->hash(key, dt->tablen)]);
+	rv = ccg_list_find(&obj, dt->cmp, dt->tab[dt->hash(key, dt->tablen)]);
 	return rv != 0 ? ((item *)rv)->val : 0;
 }
 
@@ -67,7 +68,7 @@ void *ccg_dict_remove(const void *key, const dict *dt) {
 
 	obj.key = (void *)key;
 	obj.val = 0;
-	rv = ccg_list_remove(&obj, dt->eq, &dt->tab[dt->hash(key, dt->tablen)]);
+	rv = ccg_list_remove(&obj, dt->cmp, &dt->tab[dt->hash(key, dt->tablen)]);
 	if (rv != 0) {
 		val = ((item *)rv)->val;
 		ccg_free(rv);
