@@ -79,7 +79,7 @@ Suite *dict_suite() {
 
 	tcase_add_test(tc, test_dict_create);
 	tcase_add_test(tc, test_dict_put);
-	tcase_add_test(tc, test_dict_find);
+	//tcase_add_test(tc, test_dict_find);
 
 	suite_add_tcase(s, tc);
 	return s;
