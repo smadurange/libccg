@@ -9,7 +9,7 @@ int main() {
 
 	sr = srunner_create(pqueue_suite());
 	srunner_add_suite(sr, list_suite());
-	//srunner_add_suite(sr, dict_suite());
+	srunner_add_suite(sr, dict_suite());
 
 	srunner_run_all(sr, CK_NORMAL);
 	fc = srunner_ntests_failed(sr);
