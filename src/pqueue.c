@@ -33,8 +33,6 @@ pqueue *ccg_pqueue_create(const comparer cmp, const finalizer fin) {
 size_t ccg_pqueue_size(const pqueue *pq) { return pq->size; }
 
 void ccg_pqueue_insert(void *item, pqueue *pq) {
-	int i;
-
 	if (pq->cap <= pq->size + 1)
 		pq->heap = ccg_realloc(pq->heap, sizeof(void *) * (pq->cap += BLKLEN));
 	pq->heap[++pq->size] = item;
@@ -52,7 +50,7 @@ void *ccg_pqueue_remove(pqueue *pq) {
 	fix_down(1, pq);
 	if (pq->cap - pq->size > BLKLEN)
 		pq->heap =
-				ccg_realloc(pq->heap, sizeof(void *) * (pq->cap = pq->size + BLKLEN));
+			ccg_realloc(pq->heap, sizeof(void *) * (pq->cap = pq->size + BLKLEN));
 	return pq->heap[pq->size--];
 }
 
