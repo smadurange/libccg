@@ -14,7 +14,7 @@ static size_t primes[25] = {
 typedef struct item item;
 
 struct dict {
-	size_t keyc;
+	size_t size;
 	size_t tablen;
 	hasher hash;
 	comparer cmp;
@@ -33,7 +33,7 @@ dict *ccg_dict_create(const hasher hf, const comparer cmp,
 	dict *dt;
 
 	dt = ccg_malloc(sizeof(dict));
-	dt->keyc = 0;
+	dt->size = 0;
 	dt->tablen = primes[0];
 	dt->hash = hf;
 	dt->cmp = cmp;
@@ -68,28 +68,35 @@ void ccg_dict_put(void *key, void *val, const dict *dt) {
 void *ccg_dict_remove(const void *key, const dict *dt) {
 	int i;
 	void *rv;
-	item *kv, *p;
+	item *p, *c;
 
-	for (p = 0, kv = dt->tab[(i = dt->hash(key, dt->tablen))]; kv != 0;
-			 kv = kv->next) {
-		if (dt->cmp(key, kv->key) == 0) {
-			rv = kv->val;
+	for (p = 0, c = dt->tab[(i = dt->hash(key, dt->tablen))]; c; c = c->next) {
+		if (dt->cmp(key, c->key) == 0) {
+			rv = c->val;
 			if (!p)
-				dt->tab[i] = kv->next;
+				dt->tab[i] = c->next;
 			else
-				p->next = kv->next;
-			ccg_free(kv);
+				p->next = c->next;
+			ccg_free(c);
 			return rv;
 		}
-		p = kv;
+		p = c;
 	}
 	return 0;
 }
 
 void ccg_dict_destroy(dict *dt) {
 	int i;
+	item *p, *c;
 
-	for (i = 0; i < dt->tablen; i++)
-		ccg_list_destroy(dt->fin, dt->tab[i]);
-	ccg_free(dt);
+	for (i = 0; i < dt->size; i++) {
+		for (p = 0, c = dt->tab[i]; c; c = c->next) {
+			if (p) {
+				if (dt->fin)
+					dt->fin(p->val);
+				ccg_free(p);
+			}
+			p = c;
+		}
+	}
 }
