@@ -44,7 +44,7 @@ dict *ccg_dict_create(const hash hf, const cmp cmp, const cls cls) {
 void *ccg_dict_find(const void *key, const dict *dt) {
 	item *kv;
 
-	for (kv = dt->tab[(dt->hash(key, dt->tablen))]; kv != 0; kv = kv->next)
+	for (kv = dt->tab[(dt->hash(key, dt->tablen))]; kv; kv = kv->next)
 		if (dt->cmp(key, kv->key) == 0)
 			return kv->val;
 	return 0;
