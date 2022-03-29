@@ -3,7 +3,6 @@
 
 #include "adt.h"
 #include "dict.h"
-#include "list.h"
 #include "mem.h"
 
 static size_t primes[25] = {
@@ -12,54 +11,58 @@ static size_t primes[25] = {
 	2097143,   4194301,   8388593,     16777213,  33554393, 67108859, 134217689,
 	268435399, 536870909, 10737441789, 2147483647};
 
+typedef struct item item;
+
 struct dict {
-	size_t size;
+	size_t keyc;
 	size_t tablen;
 	hasher hash;
 	comparer cmp;
 	finalizer fin;
-	list **tab;
+	item **tab;
 };
 
-typedef struct item {
+struct item {
 	void *key;
 	void *val;
-} item;
+	item *next;
+};
 
 dict *ccg_dict_create(const hasher hf, const comparer cmp,
 											const finalizer fin) {
-	int i;
 	dict *dt;
 
 	dt = ccg_malloc(sizeof(dict));
-	dt->size = 0;
+	dt->keyc = 0;
 	dt->tablen = primes[0];
 	dt->hash = hf;
 	dt->cmp = cmp;
 	dt->fin = fin;
-	dt->tab = ccg_malloc(sizeof(list *) * primes[0]);
-	for (i = 0; i < primes[0]; i++)
-		dt->tab[i] = ccg_list_create();
+	dt->tab = ccg_calloc(primes[0], sizeof(item *));
 	return dt;
 }
 
-void ccg_dict_put(void *key, void *val, const dict *dt) {
-	item *obj;
+void *ccg_dict_find(const void *key, const dict *dt) {
+	item *kv;
 
-	// todo: resize if necessary
-	obj = ccg_malloc(sizeof(item));
-	obj->key = key;
-	obj->val = val;
-	ccg_list_put_if_absent(obj, dt->cmp, dt->tab[dt->hash(key, dt->tablen)]);
+	for (kv = dt->tab[(dt->hash(key, dt->tablen))]; kv != 0; kv = kv->next)
+		if (dt->cmp(key, kv->key) == 0)
+			return kv->val;
+	return 0;
 }
 
-void *ccg_dict_find(const void *key, const dict *dt) {
-	item obj, *rv;
+void ccg_dict_put(void *key, void *val, const dict *dt) {
+	int i;
+	item *kv;
 
-	obj.key = (void *)key;
-	obj.val = 0;
-	rv = ccg_list_find(&obj, dt->cmp, dt->tab[dt->hash(key, dt->tablen)]);
-	return rv != 0 ? ((item *)rv)->val : 0;
+	// todo: resize
+	if (!ccg_dict_find(key, dt)) {
+		kv = ccg_malloc(sizeof(item));
+		kv->key = key;
+		kv->val = val;
+		kv->next = dt->tab[(i = dt->hash(key, dt->tablen))];
+		dt->tab[i] = kv;
+	}
 }
 
 void *ccg_dict_remove(const void *key, const dict *dt) {
