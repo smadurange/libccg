@@ -10,22 +10,22 @@
 struct pqueue {
 	size_t cap;
 	size_t size;
-	comparer cmp;
-	finalizer fin;
+	cmp cmp;
+	cls cls;
 	void **heap;
 };
 
 static void fix_up(register int i, const pqueue *pq);
 static void fix_down(register int i, const pqueue *pq);
 
-pqueue *ccg_pqueue_create(const comparer cmp, const finalizer fin) {
+pqueue *ccg_pqueue_create(const cmp cmp, const cls cls) {
 	pqueue *pq;
 
 	pq = ccg_malloc(sizeof(pqueue));
 	pq->cap = BLKLEN;
 	pq->size = 0;
 	pq->cmp = cmp;
-	pq->fin = fin;
+	pq->cls = cls;
 	pq->heap = ccg_calloc(BLKLEN, sizeof(void *));
 	return pq;
 }
@@ -58,8 +58,8 @@ void ccg_pqueue_destroy(pqueue *pq) {
 	int i;
 
 	for (i = 0; i < pq->size; i++) {
-		if (pq->fin != 0)
-			pq->fin(pq->heap[i]);
+		if (pq->cls)
+			pq->cls(pq->heap[i]);
 	}
 	ccg_free(pq);
 }

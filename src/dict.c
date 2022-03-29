@@ -16,9 +16,9 @@ typedef struct item item;
 struct dict {
 	size_t size;
 	size_t tablen;
-	hasher hash;
-	comparer cmp;
-	finalizer fin;
+	hash hash;
+	cmp cmp;
+	cls cls;
 	item **tab;
 };
 
@@ -28,8 +28,7 @@ struct item {
 	item *next;
 };
 
-dict *ccg_dict_create(const hasher hf, const comparer cmp,
-											const finalizer fin) {
+dict *ccg_dict_create(const hash hf, const cmp cmp, const cls cls) {
 	dict *dt;
 
 	dt = ccg_malloc(sizeof(dict));
@@ -37,7 +36,7 @@ dict *ccg_dict_create(const hasher hf, const comparer cmp,
 	dt->tablen = primes[0];
 	dt->hash = hf;
 	dt->cmp = cmp;
-	dt->fin = fin;
+	dt->cls = cls;
 	dt->tab = ccg_calloc(primes[0], sizeof(item *));
 	return dt;
 }
@@ -92,8 +91,8 @@ void ccg_dict_destroy(dict *dt) {
 	for (i = 0; i < dt->size; i++) {
 		for (p = 0, c = dt->tab[i]; c; c = c->next) {
 			if (p) {
-				if (dt->fin)
-					dt->fin(p->val);
+				if (dt->cls)
+					dt->cls(p->val);
 				ccg_free(p);
 			}
 			p = c;

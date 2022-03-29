@@ -17,7 +17,7 @@ static int cmpint(const int *a, const int *b) {
 START_TEST(test_pqueue_create) {
 	pqueue *queue;
 
-	queue = ccg_pqueue_create((comparer)cmpint, 0);
+	queue = ccg_pqueue_create((cmp)cmpint, 0);
 	ck_assert_ptr_nonnull(queue);
 	ck_assert_int_eq(ccg_pqueue_size(queue), 0);
 
@@ -30,7 +30,7 @@ START_TEST(test_pqueue_insert_int) {
 	pqueue *queue;
 
 	a = 1, b = 2, c = 3, d = 4, e = 4, f = 5;
-	queue = ccg_pqueue_create((comparer)cmpint, 0);
+	queue = ccg_pqueue_create((cmp)cmpint, 0);
 
 	ccg_pqueue_insert(&a, queue);
 	ck_assert_int_eq(ccg_pqueue_size(queue), 1);
@@ -54,7 +54,7 @@ START_TEST(test_pqueue_remove_int) {
 	int a, b, c, d, e, f, *rv;
 
 	a = 1, b = 8, c = 3, d = -1, e = 5, f = 3;
-	queue = ccg_pqueue_create((comparer)cmpint, 0);
+	queue = ccg_pqueue_create((cmp)cmpint, 0);
 	ccg_pqueue_insert(&a, queue);
 	ccg_pqueue_insert(&b, queue);
 	ccg_pqueue_insert(&c, queue);
@@ -85,7 +85,7 @@ START_TEST(test_pqueue_remove_int) {
 }
 END_TEST
 
-static void fin(void *ptr) { ccg_free(ptr); }
+static void clsint(void *ptr) { ccg_free(ptr); }
 
 START_TEST(test_pqueue_destroy) {
 	int *a;
@@ -93,7 +93,7 @@ START_TEST(test_pqueue_destroy) {
 
 	a = ccg_malloc(sizeof(int));
 	*a = 1;
-	pq = ccg_pqueue_create((comparer)cmpint, fin);
+	pq = ccg_pqueue_create((cmp)cmpint, clsint);
 	ccg_pqueue_insert(a, pq);
 	ccg_pqueue_destroy(pq);
 }

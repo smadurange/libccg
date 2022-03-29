@@ -23,14 +23,12 @@ static int cmpint(const int *a, const int *b) {
 		return 0;
 }
 
-static int streq(const char *s1, const char *s2) { return !strcmp(s1, s2); }
-
-static void finint(int *i) { ccg_free(i); }
+static void clsint(int *i) { ccg_free(i); }
 
 START_TEST(test_dict_create) {
 	dict *dt;
 
-	dt = ccg_dict_create((hasher)hashint, (comparer)cmpint, 0);
+	dt = ccg_dict_create((hash)hashint, (cmp)cmpint, 0);
 	ck_assert_ptr_nonnull(dt);
 
 	ccg_dict_destroy(dt);
@@ -44,7 +42,7 @@ START_TEST(test_dict_put) {
 	k = ccg_malloc(sizeof(int));
 	v = ccg_malloc(sizeof(int));
 	*k = 1, *v = 2;
-	dt = ccg_dict_create((hasher)hashint, (comparer)cmpint, (finalizer)finint);
+	dt = ccg_dict_create((hash)hashint, (cmp)cmpint, (cls)clsint);
 
 	ccg_dict_put(k, v, dt);
 	ck_assert_int_eq(*(int *)ccg_dict_find(k, dt), *v);
@@ -59,7 +57,7 @@ START_TEST(test_dict_find) {
 	k1 = "a", v1 = 1;
 	k2 = "b", v2 = 2;
 	k3 = "b", v2 = 3;
-	dt = ccg_dict_create((hasher)hashstr, (comparer)streq, 0);
+	dt = ccg_dict_create((hash)hashstr, (cmp)strcmp, 0);
 
 	ccg_dict_put(k1, &v1, dt);
 	ccg_dict_put(k2, &v2, dt);
@@ -79,7 +77,7 @@ Suite *dict_suite() {
 
 	tcase_add_test(tc, test_dict_create);
 	tcase_add_test(tc, test_dict_put);
-	// tcase_add_test(tc, test_dict_find);
+	tcase_add_test(tc, test_dict_find);
 
 	suite_add_tcase(s, tc);
 	return s;

@@ -17,15 +17,15 @@ list *ccg_list_create() {
 	return head;
 }
 
-void *ccg_list_put_if_absent(void *item, const comparer cmp, list *ls) {
+void *ccg_list_put_if_absent(void *item, const cmp cmp, list *ls) {
 	if (!ls->item) {
 		ls->item = item;
 		return 0;
 	}
-	for (; ls != 0; ls = ls->next) {
+	for (; ls; ls = ls->next) {
 		if (cmp(ls->item, item) == 0)
 			return ls->item;
-		if (ls->next == 0)
+		if (!ls->next)
 			break;
 	}
 	ls->next = ccg_malloc(sizeof(node));
@@ -34,14 +34,14 @@ void *ccg_list_put_if_absent(void *item, const comparer cmp, list *ls) {
 	return 0;
 }
 
-void *ccg_list_find(const void *item, const comparer cmp, const list *ls) {
-	for (; ls != 0; ls = ls->next)
+void *ccg_list_find(const void *item, const cmp cmp, const list *ls) {
+	for (; ls; ls = ls->next)
 		if (cmp(ls->item, item) == 0)
 			return ls->item;
 	return 0;
 }
 
-void *ccg_list_remove(const void *item, const comparer cmp, list **ls) {
+void *ccg_list_remove(const void *item, const cmp cmp, list **ls) {
 	void *rv;
 	node *tmp;
 
@@ -54,7 +54,7 @@ void *ccg_list_remove(const void *item, const comparer cmp, list **ls) {
 		ccg_free(tmp);
 		return rv;
 	}
-	for (; (*ls) != 0; *ls = (*ls)->next) {
+	for (; (*ls); *ls = (*ls)->next) {
 		if ((*ls)->next && cmp((*ls)->next->item, item) == 0) {
 			rv = (*ls)->next->item;
 			tmp = (*ls)->next;
@@ -66,13 +66,13 @@ void *ccg_list_remove(const void *item, const comparer cmp, list **ls) {
 	return 0;
 }
 
-void ccg_list_destroy(const finalizer fin, list *ls) {
+void ccg_list_destroy(const cls cls, list *ls) {
 	node *prev, *curr;
 
 	for (prev = 0, curr = ls; curr != 0; curr = curr->next) {
-		if (prev != 0) {
-			if (fin != 0)
-				fin(prev->item);
+		if (prev) {
+			if (cls)
+				cls(prev->item);
 			ccg_free(prev);
 		}
 		prev = curr;

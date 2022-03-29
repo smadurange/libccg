@@ -6,9 +6,9 @@
 #include "adt.h"
 
 typedef struct dict dict;
-typedef int (*hasher)(const void *, const size_t n);
+typedef int (*hash)(const void *, const size_t n);
 
-dict *ccg_dict_create(const hasher hf, const comparer cmp, const finalizer fin);
+dict *ccg_dict_create(const hash hf, const cmp cmp, const cls cls);
 void ccg_dict_put(void *key, void *val, const dict *dt);
 void *ccg_dict_find(const void *key, const dict *dt);
 void *ccg_dict_remove(const void *key, const dict *dt);
