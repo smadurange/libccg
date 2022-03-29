@@ -66,16 +66,22 @@ void ccg_dict_put(void *key, void *val, const dict *dt) {
 }
 
 void *ccg_dict_remove(const void *key, const dict *dt) {
-	void *val;
-	item obj, *rv;
+	int i;
+	void *rv;
+	item *kv, *p;
 
-	obj.key = (void *)key;
-	obj.val = 0;
-	rv = ccg_list_remove(&obj, dt->cmp, &dt->tab[dt->hash(key, dt->tablen)]);
-	if (rv != 0) {
-		val = ((item *)rv)->val;
-		ccg_free(rv);
-		return val;
+	for (p = 0, kv = dt->tab[(i = dt->hash(key, dt->tablen))]; kv != 0;
+			 kv = kv->next) {
+		if (dt->cmp(key, kv->key) == 0) {
+			rv = kv->val;
+			if (!p)
+				dt->tab[i] = kv->next;
+			else
+				p->next = kv->next;
+			ccg_free(kv);
+			return rv;
+		}
+		p = kv;
 	}
 	return 0;
 }
