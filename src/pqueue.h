@@ -3,9 +3,11 @@
 
 #include <stddef.h>
 
+#include "adt.h"
+
 typedef struct pqueue pqueue;
 
-pqueue *ccg_pqueue_create(int (*cmp)(const void *, const void *));
+pqueue *ccg_pqueue_create(const cmp cmp, const cls cls);
 size_t ccg_pqueue_size(const pqueue *pq);
 void ccg_pqueue_insert(void *item, pqueue *pq);
 void *ccg_pqueue_remove(pqueue *pq);

@@ -1,40 +1,40 @@
 #include <stddef.h>
 #include <sys/types.h>
 
+#include "adt.h"
 #include "mem.h"
 #include "pqueue.h"
 
-#define BLK_LEN 4
+#define BLKLEN 4
 
 struct pqueue {
-	void **heap;
 	size_t cap;
 	size_t size;
-	int (*cmp)(const void *, const void *);
+	cmp cmp;
+	cls cls;
+	void **heap;
 };
 
 static void fix_up(register int i, const pqueue *pq);
 static void fix_down(register int i, const pqueue *pq);
 
-pqueue *ccg_pqueue_create(int (*cmp)(const void *, const void *)) {
+pqueue *ccg_pqueue_create(const cmp cmp, const cls cls) {
 	pqueue *pq;
 
 	pq = ccg_malloc(sizeof(pqueue));
-	pq->cap = BLK_LEN;
+	pq->cap = BLKLEN;
 	pq->size = 0;
 	pq->cmp = cmp;
-	pq->heap = ccg_malloc(sizeof(void *) * BLK_LEN);
-	pq->heap[0] = 0;
+	pq->cls = cls;
+	pq->heap = ccg_calloc(BLKLEN, sizeof(void *));
 	return pq;
 }
 
 size_t ccg_pqueue_size(const pqueue *pq) { return pq->size; }
 
 void ccg_pqueue_insert(void *item, pqueue *pq) {
-	int i;
-
 	if (pq->cap <= pq->size + 1)
-		pq->heap = ccg_realloc(pq->heap, sizeof(void *) * (pq->cap += BLK_LEN));
+		pq->heap = ccg_realloc(pq->heap, sizeof(void *) * (pq->cap += BLKLEN));
 	pq->heap[++pq->size] = item;
 	fix_up(pq->size, pq);
 }
@@ -48,13 +48,21 @@ void *ccg_pqueue_remove(pqueue *pq) {
 	pq->heap[1] = pq->heap[pq->size];
 	pq->heap[pq->size] = tmp;
 	fix_down(1, pq);
-	if (pq->cap - pq->size > BLK_LEN)
+	if (pq->cap - pq->size > BLKLEN)
 		pq->heap =
-				ccg_realloc(pq->heap, sizeof(void *) * (pq->cap = pq->size + BLK_LEN));
+			ccg_realloc(pq->heap, sizeof(void *) * (pq->cap = pq->size + BLKLEN));
 	return pq->heap[pq->size--];
 }
 
-void ccg_pqueue_destroy(pqueue *pq) { ccg_free(pq); }
+void ccg_pqueue_destroy(pqueue *pq) {
+	int i;
+
+	for (i = 0; i < pq->size; i++) {
+		if (pq->cls)
+			pq->cls(pq->heap[i]);
+	}
+	ccg_free(pq);
+}
 
 static void fix_up(register int i, const pqueue *pq) {
 	void *tmp;
