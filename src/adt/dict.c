@@ -1,9 +1,9 @@
 #include <assert.h>
 #include <stddef.h>
 
+#include "../mem.h"
 #include "adt.h"
 #include "dict.h"
-#include "mem.h"
 
 static size_t primes[25] = {
 	101,       251,       509,         1021,      2039,     4093,     8191,

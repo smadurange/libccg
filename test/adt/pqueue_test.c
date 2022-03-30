@@ -1,9 +1,9 @@
 #include <assert.h>
 #include <check.h>
 
-#include "../src/mem.h"
-#include "../src/pqueue.h"
-#include "libccg_test.h"
+#include "../../src/adt/pqueue.h"
+#include "../../src/mem.h"
+#include "../libccg_test.h"
 
 static int cmpint(const int *a, const int *b) {
 	if (a == b || *a == *b)

@@ -1,8 +1,8 @@
 #include <stddef.h>
 #include <sys/types.h>
 
+#include "../mem.h"
 #include "adt.h"
-#include "mem.h"
 #include "pqueue.h"
 
 #define BLKLEN 4

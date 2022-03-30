@@ -1,15 +1,10 @@
 #include <check.h>
 
-#include "../src/list.h"
-#include "../src/mem.h"
-#include "libccg_test.h"
+#include "../../src/adt/list.h"
+#include "../../src/mem.h"
+#include "../libccg_test.h"
 
-static int cmpint(const int *a, const int *b) {
-	if (a == b || *a == *b)
-		return 0;
-	else
-		return 1;
-}
+static int cmpint(const int *a, const int *b) { return !(a == b || *a == *b); }
 
 START_TEST(test_list_create) {
 	list *ls;

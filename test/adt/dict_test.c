@@ -1,9 +1,9 @@
 #include <check.h>
 #include <string.h>
 
-#include "../src/dict.h"
-#include "../src/mem.h"
-#include "libccg_test.h"
+#include "../../src/adt/dict.h"
+#include "../../src/mem.h"
+#include "../libccg_test.h"
 
 static int hashint(const int *i, const size_t n) { return *i % n; }
 
