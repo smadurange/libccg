@@ -16,12 +16,7 @@ static int hashstr(const char *s, const size_t n) {
 	return h;
 }
 
-static int cmpint(const int *a, const int *b) {
-	if (a == b || *a == *b)
-		return 0;
-	else
-		return 1;
-}
+static int cmpint(const int *a, const int *b) { return !(a == b || *a == *b); }
 
 static void clsint(int *i) { ccg_free(i); }
 
