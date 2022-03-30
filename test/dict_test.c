@@ -47,6 +47,7 @@ START_TEST(test_dict_put) {
 
 	ccg_dict_destroy(dt);
 }
+END_TEST
 
 START_TEST(test_dict_find) {
 	dict *dt;
@@ -66,6 +67,21 @@ START_TEST(test_dict_find) {
 	ck_assert_int_eq(*(char *)ccg_dict_find(k2, dt), v2);
 	ck_assert_int_eq(*(char *)ccg_dict_find(k3, dt), v2);
 }
+END_TEST
+
+START_TEST(test_dict_remove) {
+	dict *dt;
+	char *k, v;
+
+	k = "a", v = 1;
+	dt = ccg_dict_create((hash)hashstr, (cmp)strcmp, 0);
+	ccg_dict_put(k, &v, dt);
+
+	ck_assert_ptr_eq(ccg_dict_remove("b", dt), 0);
+	ck_assert_int_eq(*(char *)ccg_dict_remove(k, dt), v);
+	ck_assert_ptr_eq(ccg_dict_remove(k, dt), 0);
+}
+END_TEST
 
 Suite *dict_suite() {
 	Suite *s;
@@ -77,6 +93,7 @@ Suite *dict_suite() {
 	tcase_add_test(tc, test_dict_create);
 	tcase_add_test(tc, test_dict_put);
 	tcase_add_test(tc, test_dict_find);
+	tcase_add_test(tc, test_dict_remove);
 
 	suite_add_tcase(s, tc);
 	return s;
