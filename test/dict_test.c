@@ -11,16 +11,16 @@ static int hashstr(const char *s, const size_t n) {
 	int h, a, b;
 
 	a = 31415, b = 27189;
-	for (h = 0; *s != 0; s++, a = a * b % (n - 1))
+	for (h = 0; *s; s++, a = a * b % (n - 1))
 		h = (a * h + *s) % n;
 	return h;
 }
 
 static int cmpint(const int *a, const int *b) {
 	if (a == b || *a == *b)
-		return 1;
-	else
 		return 0;
+	else
+		return 1;
 }
 
 static void clsint(int *i) { ccg_free(i); }
@@ -37,15 +37,13 @@ END_TEST
 
 START_TEST(test_dict_put) {
 	dict *dt;
-	int *k, *v;
+	int k, v;
 
-	k = ccg_malloc(sizeof(int));
-	v = ccg_malloc(sizeof(int));
-	*k = 1, *v = 2;
+	k = 1, v = 2;
 	dt = ccg_dict_create((hash)hashint, (cmp)cmpint, (cls)clsint);
 
-	ccg_dict_put(k, v, dt);
-	ck_assert_int_eq(*(int *)ccg_dict_find(k, dt), *v);
+	ccg_dict_put(&k, &v, dt);
+	ck_assert_int_eq(*(int *)ccg_dict_find(&k, dt), v);
 
 	ccg_dict_destroy(dt);
 }
