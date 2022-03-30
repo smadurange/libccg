@@ -66,6 +66,8 @@ START_TEST(test_dict_find) {
 	ck_assert_int_eq(*(char *)ccg_dict_find(k1, dt), v1);
 	ck_assert_int_eq(*(char *)ccg_dict_find(k2, dt), v2);
 	ck_assert_int_eq(*(char *)ccg_dict_find(k3, dt), v2);
+
+	ccg_dict_destroy(dt);
 }
 END_TEST
 
@@ -80,6 +82,8 @@ START_TEST(test_dict_remove) {
 	ck_assert_ptr_eq(ccg_dict_remove("b", dt), 0);
 	ck_assert_int_eq(*(char *)ccg_dict_remove(k, dt), v);
 	ck_assert_ptr_eq(ccg_dict_remove(k, dt), 0);
+
+	ccg_dict_destroy(dt);
 }
 END_TEST
 
@@ -91,6 +95,7 @@ START_TEST(test_dict_destroy) {
 	k = "a", *v = 1;
 	dt = ccg_dict_create((hash)hashstr, (cmp)strcmp, (cls)clsint);
 	ccg_dict_put(k, &v, dt);
+
 	ccg_dict_destroy(dt);
 }
 END_TEST
