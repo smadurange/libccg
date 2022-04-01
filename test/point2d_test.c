@@ -16,6 +16,7 @@ START_TEST(test_point2d_eq) {
 	ck_assert_int_eq(ccg_point2d_eq(&a, &a, 0.1), 1);
 	ck_assert_int_eq(ccg_point2d_eq(&a, &b, 0.1), 1);
 	ck_assert_int_eq(ccg_point2d_eq(&a, &c, 0.1), 0);
+	ck_assert_int_eq(ccg_point2d_eq(&a, &c, 100), 1);
 }
 END_TEST
 
