@@ -4,7 +4,8 @@
 #include <math.h>
 
 #define ccg_point2d_eq(a, b, eps)                                              \
-	(fabs(a->x - b->x) < eps && fabs(a->y - b->y) < eps)
+	(a == b || (fabs(((point2d *)a)->x - ((point2d *)b)->x) < eps &&             \
+							fabs(((point2d *)a)->y - ((point2d *)b)->y) < eps))
 
 typedef struct point2d {
 	double x;

@@ -7,7 +7,8 @@ HFILES =\
   src/adt/adt.h      \
   src/adt/list.h     \
   src/adt/dict.h     \
-  src/adt/pqueue.h     
+  src/adt/pqueue.h   \
+	src/point2d.h
 
 CFILES =\
   src/mem.c      		 \
@@ -22,7 +23,8 @@ TFILES =\
   test/libccg_test.c    		\
   test/adt/list_test.c      \
   test/adt/dict_test.c      \
-  test/adt/pqueue_test.c
+  test/adt/pqueue_test.c		\
+	test/point2d_test.c
 
 TESTS = libccg_test
 check_PROGRAMS = libccg_test
