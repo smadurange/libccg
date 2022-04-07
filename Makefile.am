@@ -8,13 +8,16 @@ HFILES =\
   src/adt/list.h     \
   src/adt/dict.h     \
   src/adt/pqueue.h   \
-	src/point2d.h
+	src/point.h			   \
+	src/voronoi.h
 
 CFILES =\
   src/mem.c      		 \
   src/adt/list.c     \
   src/adt/dict.c     \
-  src/adt/pqueue.c
+  src/adt/pqueue.c   \
+	src/point.c			   \
+  src/voronoi.c
 
 libccg_la_SOURCES = $(HFILES) $(CFILES)
 
@@ -24,7 +27,7 @@ TFILES =\
   test/adt/list_test.c      \
   test/adt/dict_test.c      \
   test/adt/pqueue_test.c		\
-	test/point2d_test.c
+	test/point_test.c
 
 TESTS = libccg_test
 check_PROGRAMS = libccg_test
