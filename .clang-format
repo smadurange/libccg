@@ -167,7 +167,7 @@ StatementMacros:
   - QT_REQUIRE_VERSION
 TabWidth:        2
 UseCRLF:         false
-UseTab:          ForContinuationAndIndentation
+UseTab:          AlignWithSpaces
 WhitespaceSensitiveMacros:
   - STRINGIZE
   - PP_STRINGIZE
