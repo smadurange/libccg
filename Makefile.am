@@ -9,6 +9,7 @@ HFILES =\
   src/adt/dict.h     \
   src/adt/pqueue.h   \
 	src/point.h			   \
+	src/polyline.h		 \
 	src/voronoi.h
 
 CFILES =\
@@ -17,6 +18,7 @@ CFILES =\
   src/adt/dict.c     \
   src/adt/pqueue.c   \
 	src/point.c			   \
+	src/polyline.c		 \
   src/voronoi.c
 
 libccg_la_SOURCES = $(HFILES) $(CFILES)
