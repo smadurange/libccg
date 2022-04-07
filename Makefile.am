@@ -3,13 +3,13 @@ ACLOCAL_AMFLAGS = -I m4
 lib_LTLIBRARIES = libccg.la
 
 HFILES =\
-	src/mem.h						\
-	src/adt/adt.h				\
-	src/adt/list.h			\
-	src/adt/dict.h			\
-	src/adt/pqueue.h		\
-	src/point.h					\
-	src/polyline.h			\
+	src/mem.h           \
+	src/adt/adt.h       \
+	src/adt/list.h      \
+	src/adt/dict.h      \
+	src/adt/pqueue.h    \
+	src/point.h         \
+	src/polyline.h      \
 	src/voronoi.h
 
 CFILES =\
