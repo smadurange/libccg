@@ -26,7 +26,7 @@ typedef struct event {
 	} data;
 } event;
 
-static int eventcmp(const event *ev1, const event *ev2) {
+static int evcmp(const event *ev1, const event *ev2) {
 	double y1, y2;
 
 	y1 = ev1->site ? ((site *)(ev1->data.s))->loc->y
@@ -35,6 +35,11 @@ static int eventcmp(const event *ev1, const event *ev2) {
 	y2 = ev2->site ? ((site *)(ev2->data.s))->loc->y
 								 : ((circle *)(ev2->data.c))->center->y -
 										 ((circle *)(ev2->data.c))->radius;
+	return y2 < y1 ? -1 : 1;
 }
 
-voronoi_diagram *ccg_voronoi_solve(const point **pts, const polyline *bbox) {}
+voronoi_diagram *ccg_voronoi_solve(const point **pts, const polyline *bbox) {
+	pqueue *pq;
+
+	pq = ccg_pqueue_create((cmp)evcmp, 0);
+}
