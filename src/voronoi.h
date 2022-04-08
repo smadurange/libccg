@@ -6,6 +6,7 @@
 
 typedef struct voronoi_diagram voronoi_diagram;
 
-voronoi_diagram *ccg_voronoi_solve(const point **pts, const polyline *bbox);
+voronoi_diagram *ccg_voronoi_solve(const point **pts, int n,
+                                   const polyline *bbox);
 
 #endif
