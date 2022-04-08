@@ -29,12 +29,10 @@ typedef struct event {
 static int evcmp(const event *ev1, const event *ev2) {
 	double y1, y2;
 
-	y1 = ev1->site ? ((site *)(ev1->data.s))->loc->y
-	               : ((circle *)(ev1->data.c))->center->y -
-	                   ((circle *)(ev1->data.c))->radius;
-	y2 = ev2->site ? ((site *)(ev2->data.s))->loc->y
-	               : ((circle *)(ev2->data.c))->center->y -
-	                   ((circle *)(ev2->data.c))->radius;
+	y1 = ev1->site ? ev1->data.s->loc->y
+	               : ev1->data.c->center->y - ev1->data.c->radius;
+	y2 = ev2->site ? ev2->data.s->loc->y
+	               : ev2->data.c->center->y - ev2->data.c->radius;
 	return y2 < y1 ? -1 : 1;
 }
 
