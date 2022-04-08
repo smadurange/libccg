@@ -45,14 +45,15 @@ static void evfree(event *ev) {
 	ccg_free(ev);
 }
 
-static void handle_site_event(site *site, double *sweep) {}
+static void handle_site_event(site *site) {}
 
 static void handle_circle_event(circle *circle) {}
+
+static double sweepline = 0.0;
 
 voronoi_diagram *ccg_voronoi_solve(const point **pts, int n,
                                    const polyline *bbox) {
 	int i;
-	double sweep;
 	site *s;
 	event *ev;
 	pqueue *pq;
@@ -68,10 +69,10 @@ voronoi_diagram *ccg_voronoi_solve(const point **pts, int n,
 	}
 
 	while ((ev = ccg_pqueue_remove(pq))) {
-		sweep = ev->site ? ev->data.s->loc->y
-		                 : ev->data.c->center->y - ev->data.c->radius;
+		sweepline = ev->site ? ev->data.s->loc->y
+		                     : ev->data.c->center->y - ev->data.c->radius;
 		if (ev->site)
-			handle_site_event(ev->data.s, &sweep);
+			handle_site_event(ev->data.s);
 		else
 			handle_circle_event(ev->data.c);
 	}
