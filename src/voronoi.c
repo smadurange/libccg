@@ -27,8 +27,19 @@ typedef struct event {
 	} data;
 } event;
 
+// voronoi diagram
+struct voronoi_diagram {};
+
+typedef struct edge {
+} edge;
+
+void voronoi_insert_edge(edge *e, voronoi_diagram *vd) {}
+
+// beach line.
 typedef struct beachrv {
+	arc *left;
 } beachrv;
+
 typedef struct beachline {
 } beachline;
 
@@ -56,14 +67,22 @@ static pqueue *pq;
 static beachline beach;
 static double sweepline;
 
-static void handle_site_event(site *site) {
+static void handle_site_event(site *site, voronoi_diagram *vd) {
 	arc *a;
+	beachrv rv;
+	edge *e0, *e1;
 
 	a = ccg_malloc(sizeof(arc));
 	a->focus = site->loc;
 	a->directrix = &sweepline;
 	a->circles = 0;
-	beachline_insert_arc(a);
+	rv = beachline_insert_arc(a);
+	if (rv.left) {
+		e0 = ccg_malloc(sizeof(edge));
+		e1 = ccg_malloc(sizeof(edge));
+		voronoi_insert_edge(e0, vd);
+		voronoi_insert_edge(e1, vd);
+	}
 }
 
 static void handle_circle_event(circle *circle) {}
@@ -73,6 +92,7 @@ voronoi_diagram *ccg_voronoi_solve(const point **pts, int n,
 	int i;
 	site *s;
 	event *ev;
+	voronoi_diagram *vd;
 
 	pq = ccg_pqueue_create((cmp)evcmp, (cls)evfree);
 	for (i = 0; i < n; i++) {
@@ -88,7 +108,7 @@ voronoi_diagram *ccg_voronoi_solve(const point **pts, int n,
 		sweepline = ev->site ? ev->data.s->loc->y
 		                     : ev->data.c->center->y - ev->data.c->radius;
 		if (ev->site)
-			handle_site_event(ev->data.s);
+			handle_site_event(ev->data.s, vd);
 		else
 			handle_circle_event(ev->data.c);
 	}
