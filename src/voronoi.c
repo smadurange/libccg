@@ -8,8 +8,8 @@ typedef struct site {
 } site;
 
 typedef struct arc {
-	point *focus;
-	double *directrix;
+	const point *focus;
+	const double *directrix;
 	list *circles;
 } arc;
 
@@ -26,6 +26,13 @@ typedef struct event {
 		circle *c;
 	} data;
 } event;
+
+typedef struct beachrv {
+} beachrv;
+typedef struct beachline {
+} beachline;
+
+static beachrv beachline_insert_arc(arc *a) {}
 
 static int evcmp(const event *ev1, const event *ev2) {
 	double y1, y2;
@@ -45,18 +52,27 @@ static void evfree(event *ev) {
 	ccg_free(ev);
 }
 
-static void handle_site_event(site *site) {}
+static pqueue *pq;
+static beachline beach;
+static double sweepline;
+
+static void handle_site_event(site *site) {
+	arc *a;
+
+	a = ccg_malloc(sizeof(arc));
+	a->focus = site->loc;
+	a->directrix = &sweepline;
+	a->circles = 0;
+	beachline_insert_arc(a);
+}
 
 static void handle_circle_event(circle *circle) {}
-
-static double sweepline = 0.0;
 
 voronoi_diagram *ccg_voronoi_solve(const point **pts, int n,
                                    const polyline *bbox) {
 	int i;
 	site *s;
 	event *ev;
-	pqueue *pq;
 
 	pq = ccg_pqueue_create((cmp)evcmp, (cls)evfree);
 	for (i = 0; i < n; i++) {
