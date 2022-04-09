@@ -25,7 +25,7 @@ struct edge {
 	edge *twin, *prev, *next;
 };
 
-static inline int edge_hash(const edge *e, size_t n) {
+static int edge_hash(const edge *e, size_t n) {
 	if (e->twin)
 		return site_hash(e->site, n) ^ site_hash(e->twin->site, n) ^
 		       (int)e->start->x ^ (int)e->start->y;
@@ -33,7 +33,7 @@ static inline int edge_hash(const edge *e, size_t n) {
 	return site_hash(e->site, n) ^ (int)e->start->x ^ (int)e->start->y;
 }
 
-static inline int edge_cmp(const edge *e1, edge *e2) {
+static int edge_cmp(const edge *e1, edge *e2) {
 	// Initially edges don't have origins. Hence, twin site must be checked.
 	// Boundary edges don't have twins, but always have origins. This needs to be
 	// carefully considered when storing them in a table.
@@ -50,7 +50,7 @@ static inline int edge_cmp(const edge *e1, edge *e2) {
 	return ccg_point_eq(e1->start, e2->start, PRECISION);
 }
 
-static inline void edge_free(edge *e) {
+static void edge_free(edge *e) {
 	if (e->twin)
 		e->twin->twin = 0;
 	if (e->prev)
