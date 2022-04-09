@@ -185,7 +185,6 @@ voronoi_diagram *ccg_voronoi_solve(const point **pts, int n,
 		ccg_pqueue_insert(ev, pq);
 	}
 	sites[i] = 0;
-
 	while ((ev = ccg_pqueue_remove(pq))) {
 		sweep =
 			ev->site ? ev->data.s->pt->y : ev->data.c->center->y - ev->data.c->radius;
