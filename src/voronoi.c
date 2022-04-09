@@ -54,13 +54,22 @@ static inline int edge_cmp(const edge *e1, edge *e2) {
 	return ccg_point_eq(e1->start, e2->start, PRECISION);
 }
 
-static void edge_cls(edge *e) {}
+static inline void edge_free(edge *e) {
+	if (e->twin)
+		e->twin->twin = 0;
+	if (e->prev)
+		e->prev->next = 0;
+	if (e->next)
+		e->next->prev = 0;
+	ccg_free(e->start);
+	ccg_free(e);
+}
 
 static voronoi_diagram *voronoi_diag_create() {
 	voronoi_diagram *vd;
 
 	vd = ccg_malloc(sizeof(voronoi_diagram));
-	vd->edges = ccg_dict_create((hash)edge_hash, (cmp)edge_cmp, (cls)edge_cls);
+	vd->edges = ccg_dict_create((hash)edge_hash, (cmp)edge_cmp, (cls)edge_free);
 	return vd;
 }
 
