@@ -17,10 +17,6 @@ static inline int site_cmp(const site *s1, const site *s2) {
 	return !(s1 == s2 || s1->id == s2->id);
 }
 
-struct voronoi_diagram {
-	const dict *edges;
-};
-
 typedef struct edge edge;
 
 struct edge {
@@ -65,10 +61,16 @@ static inline void edge_free(edge *e) {
 	ccg_free(e);
 }
 
-static voronoi_diagram *voronoi_diag_create() {
+struct voronoi_diagram {
+	site **sites;
+	dict *edges;
+};
+
+static voronoi_diagram *voronoi_diag_create(site **s) {
 	voronoi_diagram *vd;
 
 	vd = ccg_malloc(sizeof(voronoi_diagram));
+	vd->sites = s;
 	vd->edges = ccg_dict_create((hash)edge_hash, (cmp)edge_cmp, (cls)edge_free);
 	return vd;
 }
@@ -158,20 +160,24 @@ static void handle_circle_event(circle *circle) {}
 voronoi_diagram *ccg_voronoi_solve(const point **pts, int n,
                                    const polyline *bbox) {
 	int i;
-	site *s;
+	site *s, **sites;
 	event *ev;
 	voronoi_diagram *vd;
 
+	sites = ccg_malloc(sizeof(site *) * (n + 1));
+	vd = voronoi_diag_create(sites);
 	pq = ccg_pqueue_create((cmp)evcmp, (cls)evfree);
 	for (i = 0; i < n; i++) {
 		s = ccg_malloc(sizeof(site));
 		s->id = i;
 		s->pt = pts[i];
+		sites[i] = s;
 		ev = ccg_malloc(sizeof(event));
 		ev->site = 1;
 		ev->data.s = s;
 		ccg_pqueue_insert(ev, pq);
 	}
+	sites[i] = 0;
 
 	while ((ev = ccg_pqueue_remove(pq))) {
 		sweep =
@@ -181,6 +187,6 @@ voronoi_diagram *ccg_voronoi_solve(const point **pts, int n,
 		else
 			handle_circle_event(ev->data.c);
 	}
-
 	ccg_pqueue_destroy(pq);
+	return vd;
 }
