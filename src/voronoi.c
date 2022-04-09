@@ -1,9 +1,12 @@
 #include "voronoi.h"
+#include "adt/dict.h"
 #include "adt/list.h"
 #include "adt/pqueue.h"
 #include "mem.h"
 
-struct voronoi_diagram {};
+struct voronoi_diagram {
+	const dict *edges;
+};
 
 typedef struct edge edge;
 
@@ -12,6 +15,21 @@ struct edge {
 	point *origin;
 	edge *twin, *prev, *next;
 };
+
+static int edge_hash(const edge *e, const size_t n) {
+}
+
+static int edge_cmp(const edge *e1, const edge *e2) {}
+
+static void edge_cls(edge *e) {}
+
+static voronoi_diagram *voronoi_diag_create() {
+	voronoi_diagram *vd;
+
+	vd = ccg_malloc(sizeof(voronoi_diagram));
+	vd->edges = ccg_dict_create((hash)edge_hash, (cmp)edge_cmp, (cls)edge_cls);
+	return vd;
+}
 
 static void voronoi_insert_edge(edge *e, voronoi_diagram *vd) {}
 
