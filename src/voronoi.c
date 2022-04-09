@@ -38,7 +38,7 @@ static inline int edge_hash(const edge *e, size_t n) {
 }
 
 static inline int edge_cmp(const edge *e1, edge *e2) {
-	// Initially edges don't have origins. hence, twin site must be checked.
+	// Initially edges don't have origins. Hence, twin site must be checked.
 	// Boundary edges don't have twins, but always have origins. This needs to be
 	// carefully considered when storing them in a table.
 	if (e1 == e2)
