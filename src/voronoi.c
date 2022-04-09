@@ -16,8 +16,7 @@ struct edge {
 	edge *twin, *prev, *next;
 };
 
-static int edge_hash(const edge *e, const size_t n) {
-}
+static int edge_hash(const edge *e, const size_t n) {}
 
 static int edge_cmp(const edge *e1, const edge *e2) {}
 
@@ -112,7 +111,7 @@ static void handle_site_event(site *site, voronoi_diagram *vd) {
 		voronoi_insert_edge(e1, vd);
 	}
 	for (; *rv.circ; rv.circ++)
-		ccg_pqueue_insert(rv.circ, pq);
+		ccg_pqueue_insert(*rv.circ, pq);
 }
 
 static void handle_circle_event(circle *circle) {}
