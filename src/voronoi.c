@@ -5,25 +5,17 @@
 
 struct voronoi_diagram {};
 
-typedef struct edge {
-} edge;
+typedef struct edge edge;
 
-void voronoi_insert_edge(edge *e, voronoi_diagram *vd) {}
+struct edge {
+	const point *site;
+	point *origin;
+	edge *twin, *prev, *next;
+};
 
-typedef struct arc {
-	const point *focus;
-	const double *directrix;
-	list *circles;
-} arc;
+static void voronoi_insert_edge(edge *e, voronoi_diagram *vd) {}
 
-typedef struct beachrv {
-	arc *left;
-} beachrv;
-
-typedef struct beachline {
-} beachline;
-
-static beachrv beachline_insert_arc(arc *a) {}
+typedef struct arc arc;
 
 typedef struct site {
 	const point *loc;
@@ -61,6 +53,22 @@ static void evfree(event *ev) {
 	ccg_free(ev);
 }
 
+struct arc {
+	const point *focus;
+	const double *dtrix;
+	circle *circles;
+};
+
+typedef struct beachrv {
+	arc *left, *right;
+	circle **circ;
+} beachrv;
+
+typedef struct beachline {
+} beachline;
+
+static beachrv beachline_insert_arc(arc *a) {}
+
 static pqueue *pq;
 static beachline beach;
 static double sweepline;
@@ -72,15 +80,21 @@ static void handle_site_event(site *site, voronoi_diagram *vd) {
 
 	a = ccg_malloc(sizeof(arc));
 	a->focus = site->loc;
-	a->directrix = &sweepline;
+	a->dtrix = &sweepline;
 	a->circles = 0;
 	rv = beachline_insert_arc(a);
 	if (rv.left) {
 		e0 = ccg_malloc(sizeof(edge));
+		e0->site = rv.left->focus;
 		e1 = ccg_malloc(sizeof(edge));
+		e1->site = site->loc;
+		e0->twin = e1;
+		e1->twin = e0;
 		voronoi_insert_edge(e0, vd);
 		voronoi_insert_edge(e1, vd);
 	}
+	for (; *rv.circ; rv.circ++)
+		ccg_pqueue_insert(rv.circ, pq);
 }
 
 static void handle_circle_event(circle *circle) {}
