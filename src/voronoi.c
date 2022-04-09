@@ -3,15 +3,31 @@
 #include "adt/pqueue.h"
 #include "mem.h"
 
-typedef struct site {
-	const point *loc;
-} site;
+struct voronoi_diagram {};
+
+typedef struct edge {
+} edge;
+
+void voronoi_insert_edge(edge *e, voronoi_diagram *vd) {}
 
 typedef struct arc {
 	const point *focus;
 	const double *directrix;
 	list *circles;
 } arc;
+
+typedef struct beachrv {
+	arc *left;
+} beachrv;
+
+typedef struct beachline {
+} beachline;
+
+static beachrv beachline_insert_arc(arc *a) {}
+
+typedef struct site {
+	const point *loc;
+} site;
 
 typedef struct circle {
 	arc *arc;
@@ -26,24 +42,6 @@ typedef struct event {
 		circle *c;
 	} data;
 } event;
-
-// voronoi diagram
-struct voronoi_diagram {};
-
-typedef struct edge {
-} edge;
-
-void voronoi_insert_edge(edge *e, voronoi_diagram *vd) {}
-
-// beach line.
-typedef struct beachrv {
-	arc *left;
-} beachrv;
-
-typedef struct beachline {
-} beachline;
-
-static beachrv beachline_insert_arc(arc *a) {}
 
 static int evcmp(const event *ev1, const event *ev2) {
 	double y1, y2;
