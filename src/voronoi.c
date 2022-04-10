@@ -155,7 +155,7 @@ typedef struct beachline {
 	int cap;
 } beachline;
 
-static beachline bl;
+static beachline beach;
 
 static void breakpoint(const arc *a, const arc *b, point *bp) {
 	// https://github.com/Zalgo2462/VoronoiLib
@@ -183,16 +183,16 @@ static int find_arc_above(const arc *a) {
 	idx = -1;
 	ymin = INFINITY;
 	x = a->focus->pt->x;
-	for (i = 0; i < bl.len; i++) {
-		y = arc_eval(x, bl.arcs[i]);
+	for (i = 0; i < beach.len; i++) {
+		y = arc_eval(x, beach.arcs[i]);
 		if (y != INFINITY && (fabs(y - ymin) < EPSILON || y < ymin)) {
 			if (i - 1 >= 0) {
-				breakpoint(bl.arcs[i - 1], bl.arcs[i], &bp);
+				breakpoint(beach.arcs[i - 1], beach.arcs[i], &bp);
 				x0 = bp.x;
 			} else
 				x0 = -INFINITY;
-			if (i + 1 < bl.len) {
-				breakpoint(bl.arcs[i], bl.arcs[i + 1], &bp);
+			if (i + 1 < beach.len) {
+				breakpoint(beach.arcs[i], beach.arcs[i + 1], &bp);
 				x1 = bp.x;
 			} else
 				x1 = INFINITY;
@@ -212,15 +212,15 @@ static void beachline_insert_arc(arc *a, beachrv *rv) {
 	int i;
 	arc *sa, *lha, *rha;
 
-	if (!bl.arcs) {
-		bl.cap = 4;
-		bl.arcs = ccg_malloc(sizeof(arc *) * bl.cap);
-		bl.arcs[0] = a;
+	if (!beach.arcs) {
+		beach.cap = 4;
+		beach.arcs = ccg_malloc(sizeof(arc *) * beach.cap);
+		beach.arcs[0] = a;
 		return;
 	}
 	i = find_arc_above(a);
 	if (i >= 0) {
-		sa = bl.arcs[i];
+		sa = beach.arcs[i];
 		for (; sa->circles; (sa->circles)++)
 			sa->circles->deleted = 1;
 	}
@@ -231,10 +231,11 @@ static void handle_site_event(site *site, voronoi_diagram *vd) {
 	beachrv rv;
 	edge *e0, *e1;
 
+	rv = (beachrv){};
 	a = ccg_malloc(sizeof(arc));
 	a->focus = site;
 	a->circles = 0;
-	beachline_insert_arc(a, );
+	beachline_insert_arc(a, &rv);
 	if (rv.left) {
 		e0 = ccg_malloc(sizeof(edge));
 		e0->site = rv.left->focus;
@@ -245,7 +246,7 @@ static void handle_site_event(site *site, voronoi_diagram *vd) {
 		voronoi_insert_edge(e0, vd);
 		voronoi_insert_edge(e1, vd);
 	}
-	for (; *rv.circles; rv.circles++)
+	for (; rv.circles; rv.circles++)
 		ccg_pqueue_insert(*rv.circles, pq);
 }
 
