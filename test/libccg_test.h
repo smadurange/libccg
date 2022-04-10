@@ -7,5 +7,6 @@ Suite *pqueue_suite();
 Suite *list_suite();
 Suite *dict_suite();
 Suite *point_suite();
+Suite *voronoi_suite();
 
 #endif

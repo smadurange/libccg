@@ -11,6 +11,7 @@ int main() {
 	srunner_add_suite(sr, list_suite());
 	srunner_add_suite(sr, dict_suite());
 	srunner_add_suite(sr, point_suite());
+	srunner_add_suite(sr, voronoi_suite());
 
 	srunner_run_all(sr, CK_NORMAL);
 	fc = srunner_ntests_failed(sr);

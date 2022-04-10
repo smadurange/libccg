@@ -164,8 +164,8 @@ static void handle_site_event(site *site, voronoi_diagram *vd) {
 
 static void handle_circle_event(circle *circle) {}
 
-voronoi_diagram *ccg_voronoi_solve(const point **pts, int n,
-                                   const polyline *bbox) {
+voronoi_diagram *ccg_voronoi_solve(const point *pts, size_t n,
+                                   const point *bbox) {
 	int i;
 	site *s, **sites;
 	event *ev;
@@ -177,7 +177,7 @@ voronoi_diagram *ccg_voronoi_solve(const point **pts, int n,
 	for (i = 0; i < n; i++) {
 		s = ccg_malloc(sizeof(site));
 		s->id = i;
-		s->pt = pts[i];
+		s->pt = &pts[i];
 		sites[i] = s;
 		ev = ccg_malloc(sizeof(event));
 		ev->site = 1;
