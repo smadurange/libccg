@@ -122,7 +122,7 @@ static void ev_destroy(event *ev) {
 }
 
 static pqueue *pq;
-static double sweep;
+static double swp;
 
 struct arc {
 	const site *focus;
@@ -130,13 +130,13 @@ struct arc {
 };
 
 static double arc_eval(double x, const arc *a) {
-	// vertical parabola: (x-h)^2 = 4|fy-sweep|(y-k)
+	// vertical parabola: (x-h)^2 = 4|fy-swp|(y-k)
 	double xh;
 	const point *f;
 
 	f = a->focus->pt;
 	xh = x - f->x;
-	return ((xh * xh) / (4 * (fabs(f->y - sweep) / 2))) + (f->y + sweep) / 2;
+	return ((xh * xh) / (4 * (fabs(f->y - swp) / 2))) + (f->y + swp) / 2;
 }
 
 static inline void arc_destroy(arc *a) {
@@ -168,11 +168,11 @@ static void breakpoint(const arc *a, const arc *b, point *bp) {
 	fbx = fb->x, fby = fb->y;
 	bp->x = fabs(fay - fby) < EPSILON
 	          ? (fax + fbx) / 2
-	          : (fbx * (sweep - fay) + fax * (fby - sweep) +
-	             sqrt((sweep - fby) * (sweep - fay) *
+	          : (fbx * (swp - fay) + fax * (fby - swp) +
+	             sqrt((swp - fby) * (swp - fay) *
 	                  ((fbx - fax) * (fbx - fax) + (fby - fay) * (fby - fay)))) /
 	              (fby - fay);
-	bp->y = fabs(fay - sweep) < EPSILON ? arc_eval(bp->x, b) : arc_eval(bp->x, a);
+	bp->y = fabs(fay - swp) < EPSILON ? arc_eval(bp->x, b) : arc_eval(bp->x, a);
 }
 
 static int find_arc_above(const arc *a) {
@@ -273,7 +273,7 @@ voronoi_diagram *ccg_voronoi_solve(const point *pts, size_t n,
 	}
 	sites[i] = 0;
 	while ((ev = ccg_pqueue_remove(pq))) {
-		sweep =
+		swp =
 			ev->site ? ev->data.s->pt->y : ev->data.c->center->y - ev->data.c->radius;
 		if (ev->site)
 			handle_site_event(ev->data.s, vd);
