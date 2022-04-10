@@ -181,7 +181,7 @@ static int find_arc_above(const arc *a) {
 	double x, y, ymin, x0, x1;
 
 	idx = -1;
-	ymin = INFINITY;
+	x0 = -INFINITY, x1 = ymin = INFINITY;
 	x = a->focus->pt->x;
 	for (i = 0; i < beach.len; i++) {
 		y = arc_eval(x, beach.arcs[i]);
@@ -224,6 +224,7 @@ static void beachline_insert_arc(arc *a, beachrv *rv) {
 		for (; sa->circles; (sa->circles)++)
 			sa->circles->deleted = 1;
 	}
+	// todo:
 }
 
 static void handle_site_event(site *site, voronoi_diagram *vd) {
