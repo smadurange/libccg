@@ -275,12 +275,13 @@ voronoi_diagram *ccg_voronoi_solve(const point *pts, size_t n,
 	}
 	sites[i] = 0;
 	while ((ev = ccg_pqueue_remove(pq))) {
-		swp =
-			ev->site ? ev->data.s->pt->y : ev->data.c->center->y - ev->data.c->radius;
-		if (ev->site)
+		if (ev->site) {
+			swp = ev->data.s->pt->y;
 			handle_site_event(ev->data.s, vd);
-		else
+		} else {
+			swp = ev->data.c->center->y - ev->data.c->radius;
 			handle_circle_event(ev->data.c);
+		}
 	}
 	ccg_pqueue_destroy(pq);
 	return vd;
