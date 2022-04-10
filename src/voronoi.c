@@ -152,6 +152,22 @@ static beachline bl;
 static double sweep;
 
 static void breakpoint(const arc *a, const arc *b, point *bp) {
+	// https://github.com/Zalgo2462/VoronoiLib
+	double dtx, fax, fay, fbx, fby;
+	const point *fa, *fb;
+
+	fa = a->focus->pt;
+	fb = b->focus->pt;
+	dtx = *a->dtx;
+	fax = fa->x, fay = fa->y;
+	fbx = fb->x, fby = fb->y;
+	bp->x = fabs(fay - fby) < PRECISION
+	          ? (fax + fbx) / 2
+	          : (fbx * (dtx - fay) + fax * (fby - dtx) +
+	             sqrt((dtx - fby) * (dtx - fay) *
+	                  ((fbx - fax) * (fbx - fax) + (fby - fay) * (fby - fay)))) /
+	              (fby - fay);
+	bp->y = fabs(fay - dtx) < PRECISION ? arc_eval(bp->x, b) : arc_eval(bp->x, a);
 }
 
 static int find_arc_above(const arc *a) {
@@ -166,7 +182,7 @@ static int find_arc_above(const arc *a) {
 		y = arc_eval(x, bl.arcs[i]);
 		if (y != INFINITY && fabs(y - ymin) <= PRECISION) {
 			if (i - 1 >= 0) {
-				breakpoint(bl.arcs[i - 1], bl.arcs[i], &bp); 
+				breakpoint(bl.arcs[i - 1], bl.arcs[i], &bp);
 			}
 		}
 	}
@@ -193,7 +209,7 @@ static void handle_site_event(site *site, voronoi_diagram *vd) {
 	a->focus = site;
 	a->dtx = &sweep;
 	a->circles = 0;
-	beachline_insert_arc(a,);
+	beachline_insert_arc(a, );
 	if (rv.left) {
 		e0 = ccg_malloc(sizeof(edge));
 		e0->site = rv.left->focus;
