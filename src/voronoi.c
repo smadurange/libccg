@@ -171,21 +171,36 @@ static void breakpoint(const arc *a, const arc *b, point *bp) {
 }
 
 static int find_arc_above(const arc *a) {
-	int index, i;
+	int idx, i;
 	point bp;
 	double x, y, ymin, x0, x1;
 
-	index = -1;
+	idx = -1;
 	ymin = INFINITY;
 	x = a->focus->pt->x;
 	for (i = 0; i < bl.len; i++) {
 		y = arc_eval(x, bl.arcs[i]);
-		if (y != INFINITY && fabs(y - ymin) <= PRECISION) {
+		if (y != INFINITY && (fabs(y - ymin) < PRECISION || y < ymin)) {
 			if (i - 1 >= 0) {
 				breakpoint(bl.arcs[i - 1], bl.arcs[i], &bp);
-			}
+				x0 = bp.x;
+			} else
+				x0 = -INFINITY;
+			if (i + 1 < bl.len) {
+				breakpoint(bl.arcs[i], bl.arcs[i + 1], &bp);
+				x1 = bp.x;
+			} else
+				x1 = INFINITY;
+		}
+		if ((fabs(x - x0) < PRECISION || x > x0) &&
+		    (fabs(x - x1) < PRECISION || x < x1)) {
+			ymin = y;
+			idx = i;
+			if ((x1 != -INFINITY || x1 != INFINITY) && fabs(x - x1) < PRECISION)
+				break;
 		}
 	}
+	return idx;
 }
 
 static void beachline_insert_arc(arc *a, beachrv *rv) {
