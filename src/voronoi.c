@@ -36,8 +36,8 @@ static int edge_hash(const edge *e, size_t n) {
 }
 
 static int edge_cmp(const edge *e1, edge *e2) {
-	// Initially edges don't have origins. Hence, twin site must be checked.
-	// Boundary edges don't have twins, but always have origins.
+	// initially edges don't have origins. hence, twin site must be checked.
+	// boundary edges don't have twins, but always have origins.
 	if (e1 == e2)
 		return 0;
 	if (site_cmp(e1->site, e2->site) != 0)
@@ -121,20 +121,22 @@ static void ev_destroy(event *ev) {
 	ccg_free(ev);
 }
 
+static pqueue *pq;
+static double sweep;
+
 struct arc {
 	const site *focus;
-	const double *dtx;
 	circle *circles;
 };
 
 static double arc_eval(double x, const arc *a) {
-	// vertical parabola: (x-h)^2 = 4|fy-dtx|(y-k)
+	// vertical parabola: (x-h)^2 = 4|fy-sweep|(y-k)
 	double xh;
 	const point *f;
 
 	f = a->focus->pt;
 	xh = x - f->x;
-	return ((xh * xh) / (4 * (fabs(f->y - *a->dtx) / 2))) + (f->y + *a->dtx) / 2;
+	return ((xh * xh) / (4 * (fabs(f->y - sweep) / 2))) + (f->y + sweep) / 2;
 }
 
 static inline void arc_destroy(arc *a) {
@@ -153,27 +155,24 @@ typedef struct beachline {
 	int cap;
 } beachline;
 
-static pqueue *pq;
 static beachline bl;
-static double sweep;
 
 static void breakpoint(const arc *a, const arc *b, point *bp) {
 	// https://github.com/Zalgo2462/VoronoiLib
-	double dtx, fax, fay, fbx, fby;
+	double fax, fay, fbx, fby;
 	const point *fa, *fb;
 
 	fa = a->focus->pt;
 	fb = b->focus->pt;
-	dtx = *a->dtx;
 	fax = fa->x, fay = fa->y;
 	fbx = fb->x, fby = fb->y;
 	bp->x = fabs(fay - fby) < EPSILON
 	          ? (fax + fbx) / 2
-	          : (fbx * (dtx - fay) + fax * (fby - dtx) +
-	             sqrt((dtx - fby) * (dtx - fay) *
+	          : (fbx * (sweep - fay) + fax * (fby - sweep) +
+	             sqrt((sweep - fby) * (sweep - fay) *
 	                  ((fbx - fax) * (fbx - fax) + (fby - fay) * (fby - fay)))) /
 	              (fby - fay);
-	bp->y = fabs(fay - dtx) < EPSILON ? arc_eval(bp->x, b) : arc_eval(bp->x, a);
+	bp->y = fabs(fay - sweep) < EPSILON ? arc_eval(bp->x, b) : arc_eval(bp->x, a);
 }
 
 static int find_arc_above(const arc *a) {
@@ -234,7 +233,6 @@ static void handle_site_event(site *site, voronoi_diagram *vd) {
 
 	a = ccg_malloc(sizeof(arc));
 	a->focus = site;
-	a->dtx = &sweep;
 	a->circles = 0;
 	beachline_insert_arc(a, );
 	if (rv.left) {
