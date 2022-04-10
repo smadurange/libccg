@@ -6,7 +6,7 @@
 #include "mem.h"
 #include "voronoi.h"
 
-#define PRECISION 0.00000001
+#define EPSILON 0.00000001
 
 typedef struct site {
 	int id;
@@ -48,7 +48,7 @@ static int edge_cmp(const edge *e1, edge *e2) {
 		if ((!e1->start && e2->start) || (e1->start && !e2->start))
 			return 1;
 	}
-	return ccg_point_eq(e1->start, e2->start, PRECISION);
+	return ccg_point_eq(e1->start, e2->start, EPSILON);
 }
 
 static void edge_destroy(edge *e) {
@@ -161,13 +161,13 @@ static void breakpoint(const arc *a, const arc *b, point *bp) {
 	dtx = *a->dtx;
 	fax = fa->x, fay = fa->y;
 	fbx = fb->x, fby = fb->y;
-	bp->x = fabs(fay - fby) < PRECISION
+	bp->x = fabs(fay - fby) < EPSILON
 	          ? (fax + fbx) / 2
 	          : (fbx * (dtx - fay) + fax * (fby - dtx) +
 	             sqrt((dtx - fby) * (dtx - fay) *
 	                  ((fbx - fax) * (fbx - fax) + (fby - fay) * (fby - fay)))) /
 	              (fby - fay);
-	bp->y = fabs(fay - dtx) < PRECISION ? arc_eval(bp->x, b) : arc_eval(bp->x, a);
+	bp->y = fabs(fay - dtx) < EPSILON ? arc_eval(bp->x, b) : arc_eval(bp->x, a);
 }
 
 static int find_arc_above(const arc *a) {
@@ -180,7 +180,7 @@ static int find_arc_above(const arc *a) {
 	x = a->focus->pt->x;
 	for (i = 0; i < bl.len; i++) {
 		y = arc_eval(x, bl.arcs[i]);
-		if (y != INFINITY && (fabs(y - ymin) < PRECISION || y < ymin)) {
+		if (y != INFINITY && (fabs(y - ymin) < EPSILON || y < ymin)) {
 			if (i - 1 >= 0) {
 				breakpoint(bl.arcs[i - 1], bl.arcs[i], &bp);
 				x0 = bp.x;
@@ -192,11 +192,11 @@ static int find_arc_above(const arc *a) {
 			} else
 				x1 = INFINITY;
 		}
-		if ((fabs(x - x0) < PRECISION || x > x0) &&
-		    (fabs(x - x1) < PRECISION || x < x1)) {
+		if ((fabs(x - x0) < EPSILON || x > x0) &&
+		    (fabs(x - x1) < EPSILON || x < x1)) {
 			ymin = y;
 			idx = i;
-			if ((x1 != -INFINITY || x1 != INFINITY) && fabs(x - x1) < PRECISION)
+			if ((x1 != -INFINITY || x1 != INFINITY) && fabs(x - x1) < EPSILON)
 				break;
 		}
 	}
