@@ -1,8 +1,10 @@
-#include "voronoi.h"
+#include <math.h>
+
 #include "adt/dict.h"
 #include "adt/list.h"
 #include "adt/pqueue.h"
 #include "mem.h"
+#include "voronoi.h"
 
 #define PRECISION 0.00000001
 
@@ -120,9 +122,19 @@ static void ev_destroy(event *ev) {
 
 struct arc {
 	const site *focus;
-	const double *dtrix;
+	const double *dtx;
 	circle *circles;
 };
+
+static double arc_eval(double x, const arc *a) {
+	// vertical parabola: (x-h)^2 = 4|fy-dtx|(y-k)
+	double xh;
+	const point *f;
+
+	f = a->focus->pt;
+	xh = x - f->x;
+	return ((xh * xh) / (4 * (fabs(f->y - *a->dtx) / 2))) + (f->y + *a->dtx) / 2;
+}
 
 typedef struct beachrv {
 	arc *left, *right;
@@ -130,13 +142,47 @@ typedef struct beachrv {
 } beachrv;
 
 typedef struct beachline {
+	arc **arcs;
+	int len;
+	int cap;
 } beachline;
 
-static beachrv beachline_insert_arc(arc *a) {}
-
 static pqueue *pq;
-static beachline beach;
+static beachline bl;
 static double sweep;
+
+static void breakpoint(const arc *a, const arc *b, point *bp) {
+}
+
+static int find_arc_above(const arc *a) {
+	int index, i;
+	point bp;
+	double x, y, ymin, x0, x1;
+
+	index = -1;
+	ymin = INFINITY;
+	x = a->focus->pt->x;
+	for (i = 0; i < bl.len; i++) {
+		y = arc_eval(x, bl.arcs[i]);
+		if (y != INFINITY && fabs(y - ymin) <= PRECISION) {
+			if (i - 1 >= 0) {
+				breakpoint(bl.arcs[i - 1], bl.arcs[i], &bp); 
+			}
+		}
+	}
+}
+
+static void beachline_insert_arc(arc *a, beachrv *rv) {
+	int index;
+
+	if (!bl.arcs) {
+		bl.cap = 4;
+		bl.arcs = ccg_malloc(sizeof(arc *) * bl.cap);
+		bl.arcs[0] = a;
+		return;
+	}
+	index = find_arc_above(a);
+}
 
 static void handle_site_event(site *site, voronoi_diagram *vd) {
 	arc *a;
@@ -145,9 +191,9 @@ static void handle_site_event(site *site, voronoi_diagram *vd) {
 
 	a = ccg_malloc(sizeof(arc));
 	a->focus = site;
-	a->dtrix = &sweep;
+	a->dtx = &sweep;
 	a->circles = 0;
-	rv = beachline_insert_arc(a);
+	beachline_insert_arc(a,);
 	if (rv.left) {
 		e0 = ccg_malloc(sizeof(edge));
 		e0->site = rv.left->focus;
