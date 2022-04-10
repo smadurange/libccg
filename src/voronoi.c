@@ -92,6 +92,7 @@ typedef struct circle {
 	arc *arc;
 	point *center;
 	double radius;
+	char deleted;
 } circle;
 
 typedef struct event {
@@ -136,9 +137,14 @@ static double arc_eval(double x, const arc *a) {
 	return ((xh * xh) / (4 * (fabs(f->y - *a->dtx) / 2))) + (f->y + *a->dtx) / 2;
 }
 
+static inline void arc_destroy(arc *a) {
+	ccg_free(a->circles);
+	ccg_free(a);
+}
+
 typedef struct beachrv {
 	arc *left, *right;
-	circle **circ;
+	circle **circles;
 } beachrv;
 
 typedef struct beachline {
@@ -204,7 +210,8 @@ static int find_arc_above(const arc *a) {
 }
 
 static void beachline_insert_arc(arc *a, beachrv *rv) {
-	int index;
+	int i;
+	arc *sa, *lha, *rha;
 
 	if (!bl.arcs) {
 		bl.cap = 4;
@@ -212,7 +219,12 @@ static void beachline_insert_arc(arc *a, beachrv *rv) {
 		bl.arcs[0] = a;
 		return;
 	}
-	index = find_arc_above(a);
+	i = find_arc_above(a);
+	if (i >= 0) {
+		sa = bl.arcs[i];
+		for (; sa->circles; (sa->circles)++)
+			sa->circles->deleted = 1;
+	}
 }
 
 static void handle_site_event(site *site, voronoi_diagram *vd) {
@@ -235,8 +247,8 @@ static void handle_site_event(site *site, voronoi_diagram *vd) {
 		voronoi_insert_edge(e0, vd);
 		voronoi_insert_edge(e1, vd);
 	}
-	for (; *rv.circ; rv.circ++)
-		ccg_pqueue_insert(*rv.circ, pq);
+	for (; *rv.circles; rv.circles++)
+		ccg_pqueue_insert(*rv.circles, pq);
 }
 
 static void handle_circle_event(circle *circle) {}
