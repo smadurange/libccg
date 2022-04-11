@@ -1,5 +1,5 @@
 #include "list.h"
-#include "mem.h"
+#include "../mem.h"
 
 typedef struct node node;
 

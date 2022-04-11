@@ -1,13 +1,13 @@
 #include <check.h>
 #include <string.h>
 
-#include "../src/dict.h"
-#include "../src/mem.h"
-#include "libccg_test.h"
+#include "../../src/adt/dict.h"
+#include "../../src/mem.h"
+#include "../libccg_test.h"
 
-static int hashint(const int *i, const size_t n) { return *i % n; }
+static int hashint(const int *i, size_t n) { return *i % n; }
 
-static int hashstr(const char *s, const size_t n) {
+static int hashstr(const char *s, size_t n) {
 	int h, a, b;
 
 	a = 31415, b = 27189;
