@@ -218,7 +218,7 @@ static void beachline_insert_arc(arc *a, beachrv *rv, beachline *beach) {
 		beach->arcs[0] = a;
 		return;
 	}
-	i = find_arc_above(a);
+	i = beachline_find_arc(a, beach);
 	if (i >= 0) {
 		sa = beach->arcs[i];
 		for (; sa->circles; (sa->circles)++)
